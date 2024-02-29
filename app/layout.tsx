@@ -9,12 +9,14 @@ import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 
 export const metadata = {
-  metadataBase: new URL(`${process.env.VERCEL_URL}`),
+  // We need "https://" in metadataBase because process.env.VERCEL_URL does not contain protocol:
+  // https://vercel.com/docs/projects/environment-variables/system-environment-variables
+  metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
   title: {
     default: 'Legend.video',
     template: `%s - Legend.video`
   },
-  description: 'Make your dreams come alive with Legend.video',
+  description: 'Make your stories come alive in video, with Legend.video.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
