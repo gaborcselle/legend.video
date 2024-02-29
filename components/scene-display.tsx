@@ -387,12 +387,16 @@ export default function SceneDisplay(props: ISceneProps) {
         <div className="flex">
           <div className="mr-4 min-w-4">{props.listNumber}.</div>
           <div className="flex flex-col flex-1">
+            {isEditable ? (
             <Textarea
               rows={7}
               value={isEditable ? editedPrompt : prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}
               onChange={(e) => handlePromptChange(e.target.value)}
               disabled={!isEditable || isStillGenerating || isVideoGenerating}
             />
+            ) : (
+              <div className="text-sm">{prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}</div>
+            )}
             <div className="flex items-center mt-2">
               <Button className="rounded-full p-2" onClick={() => navigatePrompts('prev')} variant="ghost" disabled={!isPrevPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronLeft /></Button>
               <span className="mx-2">

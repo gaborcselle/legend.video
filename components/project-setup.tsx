@@ -27,7 +27,8 @@ const exampleConcepts = [
   },
 ]
 
-
+/* TODO: This should be called "ProjectView", not "ProjectSetup"
+   since this component contains the whole shebang. */
 export default function ProjectSetup() {
   const { project, setProject, projects, setProjects, scenes, setScenes } = useProjects()
 
