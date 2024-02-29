@@ -10,15 +10,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import SceneDisplay from '@/components/scene-display'
 
-import { Project, Scene } from '@/lib/types'
+import { Project } from '@/lib/types'
 import { useProjects } from '@/lib/hooks/use-projects'
 
-import { createClient } from '@/utils/supabase/client'
-
-// let isUpdatingRef = false;
-
 export default function ProjectSetup() {
-  // const supabase = createClient()
   const { project, setProject, projects, setProjects, scenes, setScenes, resetState } = useProjects()
 
   const [sceneCount, setSceneCount] = useState<number[]>([5])
@@ -28,57 +23,13 @@ export default function ProjectSetup() {
   useEffect(() => {
     if (scenes.length > 0) {
       setDisabled(true)
+      setSceneCount([scenes.length])
     }
   }, [])
 
   const handleProjectChange = (key: string, value: string) => {
     setProject({...project, [key]: value} as Project)
   }
-
-  // const updateStory = async (updatedStory: Scene, index: number) => {
-
-  //   if (isUpdatingRef) {
-  //     console.log("Update in progress, try again later.");
-  //     return; // Early return if another update is in progress
-  //   }
-  
-  //   isUpdatingRef = true; // Lock
-
-  //   const newStories = [...stories];
-  //   console.log("oldStories", stories)
-    
-  //   newStories[index] = updatedStory;
-  
-  //   // Assuming currentVideo is not null
-  //   const updatedVideo = {
-  //     ...currentVideo,
-  //     storyboard: newStories,
-  //   };
-  
-  //   try {
-  //     const response = await fetch(`/api/video/${currentVideo?.id}`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(updatedVideo),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Failed to update video');
-  //     }
-
-  //     // Update the local state with the new stories and the potentially updated video
-  //     //stories[index] = updatedStory;
-  //     setStories(newStories);
-  //     console.log("just wrote newStories", newStories)
-  //   } catch (error) {
-  //     console.error("Failed to update video data:", error);
-  //   } finally {
-  //     isUpdatingRef = false; // Unlock after the update is complete or failed
-  //   }  
-  // };
-  
 
   const generateStories = async () => {
     if ((project?.concept?.length || 0) > 0) {
@@ -128,7 +79,7 @@ export default function ProjectSetup() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ToggleGroup
+          {/* <ToggleGroup
             type="single"
             size={"lg"}
             variant="outline"
@@ -139,9 +90,9 @@ export default function ProjectSetup() {
             <ToggleGroupItem value="16:9">16:9</ToggleGroupItem>
             <ToggleGroupItem value="1:1">1:1</ToggleGroupItem>
             <ToggleGroupItem value="9:16">9:16</ToggleGroupItem>
-          </ToggleGroup>
+          </ToggleGroup> */}
 
-          <p className="mt-10 mb-1 leading-normal text-muted-foreground">
+          {/* <p className="mt-10 mb-1 leading-normal text-muted-foreground">
             Style
           </p>
           <Select value={project?.style ?? 'cinematic'} onValueChange={(val) => handleProjectChange('style', val)} disabled={disabled}>
@@ -155,7 +106,7 @@ export default function ProjectSetup() {
                 <SelectItem value="cyberpunk">Cyberpunk</SelectItem>
               </SelectGroup>
             </SelectContent>
-          </Select>
+          </Select> */}
 
           <p className="mt-10 mb-1 leading-normal text-muted-foreground">
             Concept
