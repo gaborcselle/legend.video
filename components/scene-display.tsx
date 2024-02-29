@@ -72,6 +72,8 @@ export default function SceneDisplay(props: ISceneProps) {
           }
 
           setVideos(sceneVideos.data);
+          const videoIndex = sceneStills.data[stillIndex].selected_video ?? 0;
+          setCurrentVideoIndex(videoIndex);
         }
 
       } catch (error) {
@@ -184,9 +186,28 @@ export default function SceneDisplay(props: ISceneProps) {
     debounceHandleStillNavigation(newIndex)
   }
 
+  const handleVideoNavigation = async (newIndex: number) => {
+    try {
+      const updatedStill = await supabase
+        .from('scene_stills')
+        .update({ 'selected_video': newIndex })
+        .eq('id', stills[currentStillIndex].id)
+        .select()
+
+      if (updatedStill.error) {
+        throw new Error('Failed to update still');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const debounceHandleVideoNavigation = useDebouncedCallback(handleVideoNavigation, 1000);
+
   const navigateVideos = (direction: 'prev' | 'next') => {
     const newIndex = direction === 'prev' ? currentVideoIndex - 1 : currentVideoIndex + 1;
     setCurrentVideoIndex(newIndex);
+    debounceHandleVideoNavigation(newIndex)
   };
 
   const generateStill = async () => {
@@ -266,6 +287,7 @@ export default function SceneDisplay(props: ISceneProps) {
           ...stills,
           still
         ]);
+        setCurrentStillIndex(stills.length);
       }
     } catch (error) {
       console.log(error);
@@ -275,6 +297,19 @@ export default function SceneDisplay(props: ISceneProps) {
 
   const reGenerateStill = async () => {
     setVideos([]);
+    try {
+      const updatedPrompt = await supabase
+        .from('scene_prompts')
+        .update({ 'selected_still': stills.length })
+        .eq('id', prompts[currentPromptIndex].id)
+        .select() 
+  
+      if (updatedPrompt.error) {
+        throw new Error('Failed to update prompt');
+      }
+    } catch (error) {
+      console.log(error);
+    }
     generateStill();
   }
 
@@ -304,11 +339,29 @@ export default function SceneDisplay(props: ISceneProps) {
         ...videos,
         video
       ]);
+      setCurrentVideoIndex(videos.length);
     } catch (error) {
       console.log(error);
     }
     setIsVideoGenerating(false);
   };
+
+  const reGenerateVideo = async () => {
+    try {
+      const updatedStill = await supabase
+        .from('scene_stills')
+        .update({ 'selected_video': videos.length })
+        .eq('id', stills[currentStillIndex].id)
+        .select()
+
+      if (updatedStill.error) {
+        throw new Error('Failed to update still');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    generateVideo();
+  }
 
   const toggleEdit = () => {
     if (isEditable) {
@@ -440,7 +493,7 @@ export default function SceneDisplay(props: ISceneProps) {
               <span className="mx-2">{currentVideoIndex + 1}/{videos?.length ?? 0}</span>
               <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('next')} disabled={!isNextVideoAvailable}><IconChevronRight /></Button>
               {videos && videos[currentVideoIndex] && (
-                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={generateVideo} disabled={isVideoGenerating || isStillGenerating}><IconRefresh /></Button>
+                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateVideo} disabled={isVideoGenerating || isStillGenerating}><IconRefresh /></Button>
               )}
             </div>
           )
