@@ -426,7 +426,7 @@ export default function SceneDisplay(props: ISceneProps) {
                 ) : (
                   <>
                     <img src={stills[currentStillIndex].still_url ?? ""} alt="Still" />
-                    <Button className="mt-2" variant="ghost" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')}><IconZoom /></Button>
+                    <Button className="mt-2" variant="ghost" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank') || isEditable}><IconZoom /></Button>
                   </>
                 )
               }
@@ -478,7 +478,8 @@ export default function SceneDisplay(props: ISceneProps) {
                 isStillGenerating ||
                 !stills?.[currentStillIndex] ||
                 (prompts?.[currentPromptIndex].prompt ?? "").trim() === "" ||
-                isVideoLoading
+                isVideoLoading ||
+                isEditable
               }
             >
               {isVideoGenerating ? "Generating..." : isVideoLoading ? "Loading..." : "Generate Video"}
