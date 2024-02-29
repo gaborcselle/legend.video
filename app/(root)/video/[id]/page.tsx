@@ -17,14 +17,14 @@ export default function VideoPage({ params }: { params: { id: string } }) {
     const getProject = async () => {
       try {
         // promise all later here
-        const projects = await supabase.from('projects').select('*').eq('id', params.id)
-        if (projects.error) {
-          throw new Error(projects.error.message)
+        const project = await supabase.from('projects').select('*').eq('id', params.id)
+        if (project.error) {
+          throw new Error(project.error.message)
         }
-        if (projects.data) {
-          setProject(projects.data[0])
+        if (project.data) {
+          setProject(project.data[0])
         }
-        const scenes = await supabase.from('scenes').select('*').eq('project_id', params.id)
+        const scenes = await supabase.from('scenes').select('*').eq('project_id', params.id).order('id', { ascending: true })
         if (scenes.error) {
           throw new Error(scenes.error.message)
         }
