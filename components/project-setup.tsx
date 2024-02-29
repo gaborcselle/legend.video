@@ -47,6 +47,7 @@ export default function ProjectSetup() {
   const generateStories = async () => {
     if ((project?.concept?.length || 0) > 0) {
       setIsGenerating(true)
+      setDisabled(true)
       try {
         const res = await fetch('/api/gen_project', {
           method: 'POST',
@@ -76,6 +77,7 @@ export default function ProjectSetup() {
           ...data.scenes
         ])
       } catch (error) {
+        setDisabled(false)
         console.log(error)
       }
       setIsGenerating(false)
