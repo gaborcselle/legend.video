@@ -13,7 +13,7 @@ export default function OAuthWithGoogle() {
           access_type: "offline",
           prompt: "consent",
         },
-        redirectTo: "http://localhost:3000/auth/callback",
+        redirectTo: `${process.env.VERCEL_URL}/auth/callback`,
       },
     });
   };
