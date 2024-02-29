@@ -1,5 +1,5 @@
 import { UseChatHelpers } from 'ai/react'
-import ProjectSetup from './project-setup'
+import ProjectView from './project-view'
 
 const exampleMessages = [
   {
@@ -19,7 +19,7 @@ const exampleMessages = [
 export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
   return (
     <>
-    <ProjectSetup />    
+    <ProjectView />    
     </>
   )
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import ProjectDetails from '@/components/project-setup'
+import ProjectDetails from '@/components/project-view'
 import { Skeleton } from "@/components/ui/skeleton"
 import { useProjects } from '@/lib/hooks/use-projects'
 import { createClient } from '@/utils/supabase/client'
