@@ -8,10 +8,8 @@ import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 
-console.log('process.env.VERCEL_URL', process.env.VERCEL_URL)
-
 export const metadata = {
-  metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
+  metadataBase: new URL(`${process.env.VERCEL_URL}`),
   title: {
     default: 'Legend.video',
     template: `%s - Legend.video`
