@@ -1,3 +1,5 @@
+// generated via $ supabase gen types typescript --linked > lib/database.types.ts
+
 export type Json =
   | string
   | number
