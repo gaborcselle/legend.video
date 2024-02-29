@@ -1,5 +1,5 @@
-import ProjectSetup from '@/components/project-setup'
+import ProjectView from '@/components/project-view'
 
 export default function NewVideo() {
-  return <ProjectSetup />
+  return <ProjectView />
 }
