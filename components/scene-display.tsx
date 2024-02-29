@@ -10,24 +10,24 @@ import { createClient } from '@/utils/supabase/client'
 interface ISceneProps {
   listNumber: number;
   scene: Scene;
-  // updateStory: (updatedStory: StoryType, index: number) => void; // Updated to include index
   index: number; // Added index
 }
 
 export default function SceneDisplay(props: ISceneProps) {
   const supabase = createClient();
-  // const { id, prompts, stills, videos } = props.story;
   const [prompts, setPrompts] = useState<ScenePrompt[]>([]);
   const [stills, setStills] = useState<SceneStill[]>([]);
   const [videos, setVideos] = useState<SceneVideo[]>([]);
 
   const [isStillGenerating, setIsStillGenerating] = useState<boolean>(false);
+  const [isSillLoading, setIsSillLoading] = useState<boolean>(false);
   const [isVideoGenerating, setIsVideoGenerating] = useState<boolean>(false);
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(false);
   const [currentPromptIndex, setCurrentPromptIndex] = useState<number>(0);
   const [currentStillIndex, setCurrentStillIndex] = useState<number>(0);
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [isEditable, setIsEditable] = useState<boolean>(false);
+  const [editedPrompt, setEditedPrompt] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +35,7 @@ export default function SceneDisplay(props: ISceneProps) {
         const scenePrompts = await supabase
           .from('scene_prompts')
           .select('*')
+          .order('id', { ascending: true })
           .eq('scene_id', props.scene.id);
           
         if (scenePrompts.error) {
@@ -42,24 +43,28 @@ export default function SceneDisplay(props: ISceneProps) {
         }
 
         setPrompts(scenePrompts.data);
+        const propmtIndex = props.scene.selected_prompt ?? 0;
+        setCurrentPromptIndex(propmtIndex);
 
         const sceneStills = await supabase
           .from('scene_stills')
           .select('*')
-          .eq('scene_prompt_id', scenePrompts.data[currentPromptIndex].id);
+          .order('id', { ascending: true })
+          .eq('scene_prompt_id', scenePrompts.data[propmtIndex].id);
 
         if (sceneStills.error) {
           throw new Error('Failed to fetch stills');
         }
 
         setStills(sceneStills.data);
-        const stillIndex = scenePrompts.data[currentPromptIndex].selected_still ?? 0;
+        const stillIndex = scenePrompts.data[propmtIndex].selected_still ?? 0;
         setCurrentStillIndex(stillIndex)
 
         if (sceneStills.data.length > 0) {
           const sceneVideos = await supabase
             .from('scene_videos')
             .select('*')
+            .order('id', { ascending: true })
             .eq('scene_still_id', sceneStills.data[stillIndex].id);
   
           if (sceneVideos.error) {
@@ -69,7 +74,6 @@ export default function SceneDisplay(props: ISceneProps) {
           setVideos(sceneVideos.data);
         }
 
-
       } catch (error) {
         console.log(error);
       }
@@ -78,14 +82,67 @@ export default function SceneDisplay(props: ISceneProps) {
   }, []);
   
   const handlePromptChange = (value: string) => {
-    // let newPrompts = [...(prompts || [])] as ScenePrompt[];
-    // newPrompts[currentPromptIndex] = value;
-    //updateData("prompts", newPrompts);
+    if (isEditable) {
+      setEditedPrompt(value);
+      return;
+    }
+    setPrompts([
+      ...prompts.slice(0, currentPromptIndex),
+      { ...prompts[currentPromptIndex], prompt: value },
+      ...prompts.slice(currentPromptIndex + 1),
+    ]);
   };
 
+  const handlePromptNavigation = async (newIndex: number) => {
+    try {
+      const sceneStills = await supabase
+        .from('scene_stills')
+        .select('*')
+        .eq('scene_prompt_id', prompts[newIndex].id);
+
+      if (sceneStills.error) {
+        throw new Error('Failed to fetch stills');
+      }
+
+      const sceneVideos = await supabase
+        .from('scene_videos')
+        .select('*')
+        .eq('scene_still_id', sceneStills.data[0].id);
+
+      if (sceneVideos.error) {
+        throw new Error('Failed to fetch videos');
+      }
+
+      const updatedScene = await supabase
+        .from('scenes')
+        .update({ 'selected_prompt': prompts[newIndex].seq_num })
+        .eq('id', props.scene.id)
+        .select();
+
+      if (updatedScene.error) {
+        throw new Error('Failed to update scene');
+      }
+
+      setStills(sceneStills.data);
+      setVideos(sceneVideos.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+    setIsVideoLoading(false);
+    setIsSillLoading(false);
+  };
+
+  const debounceHandlePromptNavigation = useDebouncedCallback(handlePromptNavigation, 1000);
+
   const navigatePrompts = (direction: 'prev' | 'next') => {
+    setStills([]);
+    setIsSillLoading(true);
+    setVideos([]);
+    setIsVideoLoading(true);
     const newIndex = direction === 'prev' ? currentPromptIndex - 1 : currentPromptIndex + 1;
     setCurrentPromptIndex(newIndex);
+    debounceHandlePromptNavigation(newIndex)
   };
 
   const handleStillNavigation = async (newIndex: number) => {
@@ -134,10 +191,48 @@ export default function SceneDisplay(props: ISceneProps) {
 
   const generateStill = async () => {
     setIsStillGenerating(true);
+    let newPrompt: ScenePrompt | undefined;
     try {
+      // check if we have to create a new prompt
+      if (isEditable) {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        const newPromptRes = await supabase
+          .from('scene_prompts')
+          .insert({
+            owner_id: user?.id,
+            prompt: editedPrompt,
+            scene_id: props.scene.id,
+            selected_still: 0,
+            seq_num: prompts.length
+          })
+          .select();
+
+        if (newPromptRes.error) {
+          throw new Error('Failed to create prompt');
+        }
+
+        newPrompt = newPromptRes.data[0];
+
+        const updatedScene = await supabase
+          .from('scenes')
+          .update({ 'selected_prompt': newPrompt?.seq_num })
+          .eq('id', props.scene.id)
+          .select();
+
+        if (updatedScene.error) {
+          throw new Error('Failed to update scene');
+        }
+      }
+
       if (!prompts || prompts.length === 0 || !prompts[0]?.prompt) {
         throw new Error('No prompt provided');
       }
+
       const response = await fetch('/api/gen_store_still', {
         method: 'POST',
         headers: {
@@ -145,9 +240,9 @@ export default function SceneDisplay(props: ISceneProps) {
         },
         body: JSON.stringify({
           scene_id: props.scene.id,
-          prompt_id: prompts[0].id,
-          prompt: encodeURIComponent(prompts[0].prompt),
-          seq_num: stills[stills.length - 1] ? stills[stills.length - 1].seq_num! + 1 : 0
+          prompt_id: isEditable ? newPrompt?.id : prompts[currentPromptIndex].id,
+          prompt: encodeURIComponent(isEditable ? newPrompt?.prompt ?? "" : prompts[currentPromptIndex].prompt ?? ""),
+          seq_num: isEditable ? 0 : stills[stills.length - 1] ? stills[stills.length - 1].seq_num! + 1 : 0
         }),
       })
         
@@ -155,10 +250,23 @@ export default function SceneDisplay(props: ISceneProps) {
         throw new Error('Failed to generate still');
       }
       const still = await response.json();
-      setStills([
-        ...stills,
-        still
-      ]);
+
+      if (isEditable) {
+        setCurrentPromptIndex(prompts.length);
+        setEditedPrompt("");
+        setIsEditable(false);
+        setStills([still]);
+        setVideos([]);
+        setPrompts([
+          ...prompts,
+          newPrompt!
+        ]);
+      } else {
+        setStills([
+          ...stills,
+          still
+        ]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -202,6 +310,17 @@ export default function SceneDisplay(props: ISceneProps) {
     setIsVideoGenerating(false);
   };
 
+  const toggleEdit = () => {
+    if (isEditable) {
+      setIsEditable(false);
+    } else {
+      if (editedPrompt.length === 0) {
+        setEditedPrompt(prompts[currentPromptIndex].prompt ?? "");
+      }
+      setIsEditable(true);
+    }
+  }
+
   const isPrevPromptAvailable = currentPromptIndex > 0;
   const isNextPromptAvailable = currentPromptIndex < (prompts?.length ?? 0) - 1;
   const isPrevStillAvailable = currentStillIndex > 0;
@@ -217,34 +336,57 @@ export default function SceneDisplay(props: ISceneProps) {
           <div className="flex flex-col flex-1">
             <Textarea
               rows={7}
-              defaultValue={prompts && prompts.length > 0 ? prompts[0].prompt ?? "" : ""}
+              value={isEditable ? editedPrompt : prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}
               onChange={(e) => handlePromptChange(e.target.value)}
+              disabled={!isEditable || isStillGenerating || isVideoGenerating}
             />
             <div className="flex items-center mt-2">
-              <Button className="rounded-full p-2" onClick={() => navigatePrompts('prev')} variant="ghost" disabled={!isPrevPromptAvailable}><IconChevronLeft /></Button>
-              <span className="mx-2">{currentPromptIndex + 1}/{prompts?.length}</span>
-              <Button className="rounded-full p-2"  onClick={() => navigatePrompts('next')} variant="ghost" disabled={!isNextPromptAvailable}><IconChevronRight /></Button>
-              <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={() => setIsEditable(true)}><IconPencil /></Button>
+              <Button className="rounded-full p-2" onClick={() => navigatePrompts('prev')} variant="ghost" disabled={!isPrevPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronLeft /></Button>
+              <span className="mx-2">
+                {
+                  isEditable ? `${prompts?.length + 1}/${prompts?.length + 1}` : `${currentPromptIndex + 1}/${prompts?.length}`
+                }
+              </span>
+              <Button className="rounded-full p-2"  onClick={() => navigatePrompts('next')} variant="ghost" disabled={!isNextPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronRight /></Button>
+              <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={toggleEdit} disabled={isStillGenerating || isVideoGenerating}><IconPencil /></Button>
             </div>
           </div>
         </div>
       </div>
       <div className="col-span-3">
         <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
-          {stills && stills[currentStillIndex] ? (
+          {(stills && stills[currentStillIndex]) ? (
             <>
-              <img src={stills[currentStillIndex].still_url ?? ""} alt="Still" />
-              <Button className="mt-2" variant="ghost" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')}><IconZoom /></Button>
+              {
+                isEditable ? (
+                  <Button
+                    className="min-w-24"
+                    onClick={generateStill}
+                    disabled={
+                      isStillGenerating ||
+                      (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" ||
+                      (isEditable && (prompts?.[currentPromptIndex]?.prompt || "").trim() === editedPrompt.trim())
+                    }
+                  >
+                    {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
+                  </Button>
+                ) : (
+                  <>
+                    <img src={stills[currentStillIndex].still_url ?? ""} alt="Still" />
+                    <Button className="mt-2" variant="ghost" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')}><IconZoom /></Button>
+                  </>
+                )
+              }
             </>
           ) : ( 
-            <Button className="min-w-24" onClick={generateStill} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === ""}>
-              {isStillGenerating ? "Generating..." : "Generate Still"}
+            <Button className="min-w-24" onClick={generateStill} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading}>
+              {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
             </Button>
           )}
         </div>
 
         {
-          (stills?.length ?? 0) > 0 && (
+          ((stills?.length ?? 0) > 0 && !isEditable) && (
             <div className="flex items-center mt-2">
               <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable}><IconChevronLeft /></Button>
               <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
@@ -260,8 +402,19 @@ export default function SceneDisplay(props: ISceneProps) {
         <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
           {videos && videos[currentVideoIndex] ? (
             <>
-              <video src={videos[currentVideoIndex]?.video_url ?? ""} controls />
-              <Button className="mt-2" variant="ghost" onClick={() => window.open(videos[currentVideoIndex]?.video_url ?? "", '_blank')}><IconZoom /></Button>
+              {
+                isEditable ? (
+                  <Button className="min-w-24" onClick={generateVideo} disabled>
+                    Generate Video
+                  </Button>
+                ) : (
+                  <>
+                    <video src={videos[currentVideoIndex].video_url ?? ""} controls></video>
+                    <Button className="mt-2" variant="ghost" onClick={() => window.open(videos[currentVideoIndex].video_url ?? "", '_blank')}><IconZoom /></Button>
+                  </>
+                )
+              
+              }
             </>
           ) : (
             <Button
@@ -281,7 +434,7 @@ export default function SceneDisplay(props: ISceneProps) {
         </div>
 
         {
-          (videos?.length ?? 0) > 0 && (
+          ((videos?.length ?? 0) > 0 && !isEditable) && (
             <div className="flex items-center mt-2">
               <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('prev')} disabled={!isPrevVideoAvailable}><IconChevronLeft /></Button>
               <span className="mx-2">{currentVideoIndex + 1}/{videos?.length ?? 0}</span>
