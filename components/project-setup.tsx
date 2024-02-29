@@ -131,6 +131,26 @@ export default function ProjectSetup() {
             disabled={disabled}
           />
 
+          {/* Suggestion buttons to fill the textarea with sample texts */}
+          {
+            !disabled && (
+              <>
+                <div className='mt-5'>Concept examples:</div>
+                <div className="mt-2 flex gap-4">
+                  <Button variant="outline" onClick={() => handleProjectChange('concept', 'A detective story in a haunted mansion')} disabled={disabled}>
+                    Detective story
+                  </Button>
+                  <Button variant="outline" onClick={() => handleProjectChange('concept', 'A fashion designer starts a new brand for AI fashion')} disabled={disabled}>
+                    Fashion designer
+                  </Button>
+                  <Button variant="outline" onClick={() => handleProjectChange('concept', 'A sci-fi thriller set on Mars')} disabled={disabled}>
+                    Sci-fi thriller
+                  </Button>
+                </div>
+              </>
+            )
+          }
+
           <div className="flex gap-4 mt-10">
             <div className="leading-normal min-w-44 text-muted-foreground text-nowrap">Scenes: {sceneCount}</div>
             <Slider min={1} max={10} step={1} value={sceneCount} onValueChange={(val: SetStateAction<number[]>) => setSceneCount(val)} disabled={disabled} />
