@@ -6,7 +6,7 @@ import { Slider } from '@/components/ui/slider'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import SceneDisplay from '@/components/scene-display'
+import SceneView from '@/components/scene-view'
 import { IconArrowRight } from '@/components/ui/icons'
 
 import { Project } from '@/lib/types'
@@ -29,7 +29,7 @@ const exampleConcepts = [
 
 /* TODO: This should be called "ProjectView", not "ProjectSetup"
    since this component contains the whole shebang. */
-export default function ProjectSetup() {
+export default function ProjectView() {
   const { project, setProject, projects, setProjects, scenes, setScenes } = useProjects()
 
   const [sceneCount, setSceneCount] = useState<number[]>([5])
@@ -226,7 +226,7 @@ export default function ProjectSetup() {
             <div className="flex flex-col gap-6">
               {
                 scenes.map((scene, index) => (
-                  <SceneDisplay
+                  <SceneView
                     key={index}
                     listNumber={index + 1}
                     scene={scene}

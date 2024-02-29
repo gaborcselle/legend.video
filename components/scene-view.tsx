@@ -13,7 +13,7 @@ interface ISceneProps {
   index: number; // Added index
 }
 
-export default function SceneDisplay(props: ISceneProps) {
+export default function SceneView(props: ISceneProps) {
   const supabase = createClient();
   const [prompts, setPrompts] = useState<ScenePrompt[]>([]);
   const [stills, setStills] = useState<SceneStill[]>([]);
