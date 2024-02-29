@@ -14,7 +14,7 @@ export default function OAuthWithGithub() {
           access_type: "offline",
           prompt: "consent",
         },
-        redirectTo: `${process.env.VERCEL_URL}/auth/callback`,
+        redirectTo: `${process.env.NEXT_PUBLIC_AUTH_REDIRECT_URL}`,
       },
     });
   };
