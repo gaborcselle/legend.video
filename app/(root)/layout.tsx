@@ -6,11 +6,11 @@ import { SidebarMobile } from '@/components/sidebar-mobile'
 
 import { ProjectsProvider } from '@/lib/hooks/use-projects'
 
-interface ChatLayoutProps {
+interface LegendVideoLayoutProps {
   children: React.ReactNode
 }
 
-export default function ChatLayout({ children }: ChatLayoutProps) {
+export default function LegendVideoLayout({ children }: LegendVideoLayoutProps) {
   return (
     <ProjectsProvider>
       {/* Todo: fix the design here for mobile sidebar for later */}
