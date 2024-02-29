@@ -14,7 +14,7 @@ import { Project } from '@/lib/types'
 import { useProjects } from '@/lib/hooks/use-projects'
 
 export default function ProjectSetup() {
-  const { project, setProject, projects, setProjects, scenes, setScenes, resetState } = useProjects()
+  const { project, setProject, projects, setProjects, scenes, setScenes } = useProjects()
 
   const [sceneCount, setSceneCount] = useState<number[]>([5])
   const [isGenerating, setIsGenerating] = useState<boolean>(false)
@@ -29,6 +29,19 @@ export default function ProjectSetup() {
 
   const handleProjectChange = (key: string, value: string) => {
     setProject({...project, [key]: value} as Project)
+  }
+
+  const resetState = () => {
+    setSceneCount([5])
+    setProject({
+      aspect_ratio: '16:9',
+      concept: '',
+      created_at: '',
+      id: 0,
+      owner_id: null,
+      style: 'cinematic',
+      title: ''
+    });
   }
 
   const generateStories = async () => {
