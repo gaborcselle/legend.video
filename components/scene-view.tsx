@@ -76,6 +76,12 @@ export default function SceneView(props: ISceneProps) {
           setCurrentVideoIndex(videoIndex);
         }
 
+        if (scenePrompts.data.length > 0) {
+          if (sceneStills.data.length === 0) {
+            generateStill(scenePrompts.data[propmtIndex]);
+          }
+        }
+
       } catch (error) {
         console.log(error);
       }
@@ -210,7 +216,7 @@ export default function SceneView(props: ISceneProps) {
     debounceHandleVideoNavigation(newIndex)
   };
 
-  const generateStill = async () => {
+  const generateStill = async (prompt?: ScenePrompt) => {
     setIsStillGenerating(true);
     let newPrompt: ScenePrompt | undefined;
     try {
@@ -250,9 +256,13 @@ export default function SceneView(props: ISceneProps) {
         }
       }
 
-      if (!prompts || prompts.length === 0 || !prompts[0]?.prompt) {
-        throw new Error('No prompt provided');
+      if (!prompt) {
+        if (!prompts || prompts.length === 0 || !prompts[0]?.prompt) {
+          throw new Error('No prompt provided');
+        }
       }
+
+      const currentPrompt = prompt ?? prompts[currentPromptIndex]
 
       const response = await fetch('/api/gen_store_still', {
         method: 'POST',
@@ -261,8 +271,8 @@ export default function SceneView(props: ISceneProps) {
         },
         body: JSON.stringify({
           scene_id: props.scene.id,
-          prompt_id: isEditable ? newPrompt?.id : prompts[currentPromptIndex].id,
-          prompt: encodeURIComponent(isEditable ? newPrompt?.prompt ?? "" : prompts[currentPromptIndex].prompt ?? ""),
+          prompt_id: isEditable ? newPrompt?.id : currentPrompt.id,
+          prompt: encodeURIComponent(isEditable ? newPrompt?.prompt ?? "" : currentPrompt.prompt ?? ""),
           seq_num: isEditable ? 0 : stills[stills.length - 1] ? stills[stills.length - 1].seq_num! + 1 : 0
         }),
       })
@@ -395,7 +405,7 @@ export default function SceneView(props: ISceneProps) {
               disabled={!isEditable || isStillGenerating || isVideoGenerating}
             />
             ) : (
-              <div className="text-sm">{prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}</div>
+              <div className="text-sm max-h-[157px] overflow-y-auto border rounded-lg p-1">{prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}</div>
             )}
             <div className="flex items-center mt-2">
               <Button className="rounded-full p-2" onClick={() => navigatePrompts('prev')} variant="ghost" disabled={!isPrevPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronLeft /></Button>
@@ -418,7 +428,7 @@ export default function SceneView(props: ISceneProps) {
                 isEditable ? (
                   <Button
                     className="min-w-24"
-                    onClick={generateStill}
+                    onClick={() => generateStill()}
                     disabled={
                       isStillGenerating ||
                       (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" ||
@@ -436,7 +446,7 @@ export default function SceneView(props: ISceneProps) {
               }
             </>
           ) : ( 
-            <Button className="min-w-24" onClick={generateStill} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading}>
+            <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading}>
               {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
             </Button>
           )}

@@ -21,12 +21,12 @@ import { IconSpinner } from '@/components/ui/icons'
 
 interface ClearHistoryProps {
   isEnabled: boolean
-  clearChats: () => ServerActionResult<void>
+  clearProjects: () => ServerActionResult<void>
 }
 
 export function ClearHistory({
   isEnabled = false,
-  clearChats
+  clearProjects
 }: ClearHistoryProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
@@ -54,16 +54,11 @@ export function ClearHistory({
             disabled={isPending}
             onClick={event => {
               event.preventDefault()
-              startTransition(() => {
-                clearChats().then(result => {
-                  if (result && 'error' in result) {
-                    toast.error(result.error)
-                    return
-                  }
-
-                  setOpen(false)
-                  router.push('/')
-                })
+              startTransition(async () => {
+                await clearProjects()
+                toast.success('All projects deleted')
+                setOpen(false)
+                router.push('/')
               })
             }}
           >

@@ -1,10 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import * as React from 'react'
 import { toast } from 'react-hot-toast'
 
-import { ServerActionResult, type Project } from '@/lib/types'
+import { Project } from '@/lib/types'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,19 +21,36 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
+import { useProjects } from '@/lib/hooks/use-projects'
+import { createClient } from '@/utils/supabase/client'
+import { useRouter } from 'next/navigation'
 
 interface SidebarActionsProps {
   project: Project
-  removeProject: (args: { id: number }) => ServerActionResult<void>
 }
 
-export function SidebarActions({
-  project: project,
-  removeProject: removeProject,
-}: SidebarActionsProps) {
+export function SidebarActions({project: project}: SidebarActionsProps) {
+  const supabase = createClient()
   const router = useRouter()
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [isRemovePending, startRemoveTransition] = React.useTransition()
+
+  const { setProjects, projects } = useProjects()
+
+  const removeProject = async () => {
+    try {
+      const { error } = await supabase.from('projects').delete().eq('id', project.id)
+      if (error) {
+        throw new Error(error.message)
+      }
+      const newProjects = projects.filter(p => p.id !== project.id)
+      setProjects(newProjects)
+
+    } catch (error) {
+      toast.error('Failed to delete project')
+    }
+  }
+
 
   return (
     <>
@@ -75,19 +91,10 @@ export function SidebarActions({
                 event.preventDefault()
                 // @ts-ignore
                 startRemoveTransition(async () => {
-                  const result = await removeProject({
-                    id: project.id
-                  })
-
-                  if (result && 'error' in result) {
-                    toast.error(result.error)
-                    return
-                  }
-
+                  await removeProject()
                   setDeleteDialogOpen(false)
-                  router.refresh()
-                  router.push('/')
                   toast.success('Project deleted')
+                  router.push('/')
                 })
               }}
             >

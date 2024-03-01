@@ -1,18 +1,20 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { clearProjects } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useProjects } from '@/lib/hooks/use-projects'
 import { Skeleton } from "@/components/ui/skeleton"
 import { createClient } from '@/utils/supabase/client'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 
 export function SidebarList() {
   const { projects, setProjects } = useProjects()
   const [isLoading, setIsLoading] = useState(true)
   const supabase = createClient()
+  const router = useRouter()
 
   useEffect(() => {
     const getProjects = async () => {
@@ -46,6 +48,28 @@ export function SidebarList() {
     getProjects()
   }, [])
 
+  const clearProjects = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        throw new Error('Unauthorized')
+      }
+
+      const { error } = await supabase.from('projects').delete().eq('owner_id', user.id)
+      if (error) {
+        throw new Error(error.message)
+      }
+      setProjects([])
+      router.push('/')
+    } catch (error) {
+      console.log(error)
+      toast.error('Failed to delete projects')
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center">
@@ -71,7 +95,7 @@ export function SidebarList() {
       </div>
       <div className="flex items-center justify-between p-4">
         <ThemeToggle />
-        <ClearHistory clearChats={clearProjects} isEnabled={projects?.length > 0} />
+        <ClearHistory clearProjects={clearProjects} isEnabled={projects?.length > 0} />
       </div>
     </div>
   )
