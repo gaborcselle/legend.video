@@ -10,6 +10,8 @@ interface ProjectsContextType {
   setScenes: (scenes: Scene[]) => void;
   projects: Project[];
   setProjects: (projects: Project[]) => void;
+  isGeneratingScenes: boolean;
+  setIsGeneratingScenes: (isGenerating: boolean) => void;
   resetState: () => void;
 }
 
@@ -42,6 +44,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
   });
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [isGeneratingScenes, setIsGeneratingScenes] = useState<boolean>(false);
 
   const resetState = () => {
     setProject({
@@ -57,7 +60,11 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
   }
 
   return (
-    <ProjectsContext.Provider value={{ project, setProject, scenes, setScenes, projects, setProjects, resetState }}>
+    <ProjectsContext.Provider
+      value={
+        { project, setProject, scenes, setScenes, projects, setProjects, isGeneratingScenes, setIsGeneratingScenes, resetState }
+      }
+    >
       {children}
     </ProjectsContext.Provider>
   );
