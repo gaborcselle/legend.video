@@ -117,10 +117,12 @@ export default function ConceptSetup() {
           ))}
         </div>
         
-        <div className="flex gap-4 mt-10">
+        <div className="flex flex-col lg:flex-row gap-4 mt-10">
           <div className="leading-normal min-w-44 text-muted-foreground text-nowrap">Scenes: {sceneCount}</div>
-          <Slider min={1} max={10} step={1} value={sceneCount} onValueChange={(val: SetStateAction<number[]>) => setSceneCount(val)} />
-          <div className="leading-normal text-muted-foreground">10</div>
+          <div className='flex gap-4 flex-1'>
+            <Slider min={1} max={10} step={1} value={sceneCount} onValueChange={(val: SetStateAction<number[]>) => setSceneCount(val)} />
+            <div className="leading-normal text-muted-foreground">10</div>
+          </div>
         </div>
         <div className="mt-10 flex justify-end gap-4">
           <Button variant="outline" onClick={resetState}>
