@@ -14,10 +14,8 @@ export default function LegendVideoLayout({ children }: LegendVideoLayoutProps) 
   return (
     <ProjectsProvider>
       {/* Todo: fix the design here for mobile sidebar for later */}
-      {/* <SidebarMobile>
-        <ProjectHistory />
-      </SidebarMobile> */}
       <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
+        <SidebarMobile />
         <SidebarDesktop />
         <div className="group w-full overflow-auto pl-0 animate-in duration-300 ease-in-out peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]">
           {children}

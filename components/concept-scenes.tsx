@@ -16,7 +16,7 @@ export default function ConceptScenes() {
             <CardTitle>Storyboard</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-12 gap-4 sticky top-[-2px] bg-white dark:bg-neutral-950 h-16 z-10">
+            <div className="hidden lg:grid grid-cols-12 gap-4 sticky top-[-2px] bg-white dark:bg-neutral-950 h-16 z-10">
               <div className="col-span-6 flex justify-center items-center">Prompt</div>
               <div className="col-span-3 flex justify-center items-center">Still</div>
               <div className="col-span-3 flex justify-center items-center">Video</div>
