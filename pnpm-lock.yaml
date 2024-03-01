@@ -101,6 +101,9 @@ dependencies:
   openai:
     specifier: ^4.28.0
     version: 4.28.0
+  optional:
+    specifier: ^0.1.4
+    version: 0.1.4
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -5609,6 +5612,10 @@ packages:
       web-streams-polyfill: 3.3.3
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /optional@0.1.4:
+    resolution: {integrity: sha512-gtvrrCfkE08wKcgXaVwQVgwEQ8vel2dc5DDBn9RLQZ3YtmtkBss6A2HY6BnJH4N/4Ku97Ri/SF8sNWE2225WJw==}
     dev: false
 
   /optionator@0.9.3:
