@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { removeChat, shareChat } from '@/app/actions'
+import { removeProject } from '@/app/actions'
 
 import { SidebarActions } from '@/components/sidebar-actions'
 import { SidebarItem } from '@/components/sidebar-item'
@@ -27,11 +27,10 @@ export function SidebarItems() {
               }}
             >
               <SidebarItem index={index} project={project}>
-                {/* <SidebarActions
-                  chat={chat}
-                  removeChat={removeChat}
-                  shareChat={shareChat}
-                /> */}
+                 <SidebarActions
+                  project={project}
+                  removeProject={removeProject}
+                />
                 <div></div>
               </SidebarItem>
             </motion.div>
