@@ -393,9 +393,11 @@ export default function SceneView(props: ISceneProps) {
 
   return (
     <div className="grid grid-cols-12 gap-4 mt-3">
-      <div className="col-span-6">
+      <div className="font-bold text-lg lg:hidden">{props.listNumber}.</div>
+      <div className="col-span-12 lg:col-span-6">
+        <div className="mb-1 lg:hidden">Concepts:</div>
         <div className="flex">
-          <div className="mr-4 min-w-4">{props.listNumber}.</div>
+          <div className="mr-4 min-w-4 hidden lg:block">{props.listNumber}.</div>
           <div className="flex flex-col flex-1">
             {isEditable ? (
             <Textarea
@@ -420,7 +422,8 @@ export default function SceneView(props: ISceneProps) {
           </div>
         </div>
       </div>
-      <div className="col-span-3">
+      <div className="col-span-12 lg:col-span-3">
+        <div className="mb-1 lg:hidden">Stills:</div>
         <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
           {(stills && stills[currentStillIndex]) ? (
             <>
@@ -465,7 +468,8 @@ export default function SceneView(props: ISceneProps) {
           )
         }
       </div>
-      <div className="col-span-3">
+      <div className="col-span-12 lg:col-span-3">
+        <div className="mb-1 lg:hidden">Videos:</div>
         <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
           {videos && videos[currentVideoIndex] ? (
             <>
