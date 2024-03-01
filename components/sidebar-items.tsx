@@ -2,8 +2,6 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { removeProject } from '@/app/actions'
-
 import { SidebarActions } from '@/components/sidebar-actions'
 import { SidebarItem } from '@/components/sidebar-item'
 
@@ -29,7 +27,6 @@ export function SidebarItems() {
               <SidebarItem index={index} project={project}>
                  <SidebarActions
                   project={project}
-                  removeProject={removeProject}
                 />
                 <div></div>
               </SidebarItem>
