@@ -18,6 +18,8 @@ export default async function SignInPage() {
 
   return (
     <div className="flex h-[calc(100vh-theme(spacing.16))] items-center justify-center py-10 flex-col gap-4">
+      <p><b>Legend.video</b> lets you build your movie trailer from a prompt.</p>
+      <p>Sign in with your GitHub or Google account to get started.</p>
       <OAuthWithGithub />
       <OAuthWithGoogle />
     </div>
