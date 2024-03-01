@@ -2,6 +2,8 @@ import { OpenAI } from 'openai';
 import { createClient } from '@/utils/supabase/middleware'
 import { NextRequest } from 'next/server'
 
+export const maxDuration = 300;
+
 const openai = new OpenAI();
 
 const GPT_MODEL = "gpt-4-turbo-preview";
