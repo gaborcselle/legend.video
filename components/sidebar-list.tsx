@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { clearChats } from '@/app/actions'
+import { clearProjects } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -71,7 +71,7 @@ export function SidebarList() {
       </div>
       <div className="flex items-center justify-between p-4">
         <ThemeToggle />
-        <ClearHistory clearChats={clearChats} isEnabled={projects?.length > 0} />
+        <ClearHistory clearChats={clearProjects} isEnabled={projects?.length > 0} />
       </div>
     </div>
   )
