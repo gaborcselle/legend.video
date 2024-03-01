@@ -1,4 +1,4 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import { Scene, ScenePrompt, SceneStill, SceneVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
