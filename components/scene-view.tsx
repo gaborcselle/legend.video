@@ -407,7 +407,7 @@ export default function SceneView(props: ISceneProps) {
               disabled={!isEditable || isStillGenerating || isVideoGenerating}
             />
             ) : (
-              <div className="text-sm max-h-[157px] overflow-y-auto border rounded-lg p-1">{prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}</div>
+              <div className="text-sm rounded-lg p-1">{prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}</div>
             )}
             <div className="flex items-center mt-2">
               <Button className="rounded-full p-2" onClick={() => navigatePrompts('prev')} variant="ghost" disabled={!isPrevPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronLeft /></Button>
