@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
+import { CreditsView } from './credits-view'
 
 export function SidebarList() {
   const { projects, setProjects } = useProjects()
@@ -94,6 +95,7 @@ export function SidebarList() {
         )}
       </div>
       <div className="flex items-center justify-between p-4">
+        <CreditsView />
         <ThemeToggle />
         <ClearHistory clearProjects={clearProjects} isEnabled={projects?.length > 0} />
       </div>
