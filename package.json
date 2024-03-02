@@ -55,7 +55,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "replicate": "^0.27.1",
-    "sharp": "^0.33.2",
+    "sharp": "0.32.6",
     "use-debounce": "^10.0.0",
     "vercel": "^33.5.1"
   },
