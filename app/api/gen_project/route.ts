@@ -169,7 +169,7 @@ export async function POST(req: NextRequest)  {
 
         return new Response(responsePayload, { status: 200 });
     } catch (error) {
-        console.error(error);
-        return new Response('Failed to generate scene descriptions and title.', { status: 500 });
+        const errorMessage = (error as Error)?.message || 'Failed to generate scene descriptions and title.';
+        return new Response(errorMessage, { status: 500 });
     }
 };
