@@ -23,7 +23,7 @@ export default function OAuthWithGithub() {
     <>
       <button
         onClick={handleGithubSignIn}
-        className="rounded-md px-4 py-2 mb-2 flex items-center bg-black h-12"
+        className="rounded-md px-4 py-2 mb-2 flex items-center bg-black h-12 min-w-[215px]"
       >
         <IconGitHub className="mr-2 text-white" />
         <span className="ml-4 text-white">Sign In with Github</span>
