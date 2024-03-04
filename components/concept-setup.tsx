@@ -30,6 +30,7 @@ export default function ConceptSetup() {
   const { project, projects, setProject, setProjects, setScenes, setIsGeneratingScenes } = useProjects()
 
   const [sceneCount, setSceneCount] = useState<number[]>([5])
+  const [errorMsg, setErrorMsg] = useState<string>('')
 
   const handleConceptChange = (key: string, value: string) => {
     setProject({...project, [key]: value} as Project)
@@ -80,7 +81,7 @@ export default function ConceptSetup() {
           ...data.scenes
         ])
       } catch (error) {
-        console.log(error)
+        setErrorMsg(error as string)
       }
       setIsGeneratingScenes(false)
     }
@@ -132,6 +133,7 @@ export default function ConceptSetup() {
             Generate storyboard
           </Button>
         </div>
+        {errorMsg && <div className="mt-4 text-red-500">{errorMsg}</div>}
       </CardContent>
     </Card>
   )
