@@ -37,7 +37,7 @@ export function ClearHistory({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" disabled={!isEnabled || isPending || isGeneratingScenes}>
+        <Button variant="ghost" disabled={!isEnabled || isPending || isGeneratingScenes} className='hover:bg-zinc-200 dark:hover:bg-zinc-300/10'>
           {isPending && <IconSpinner className="mr-2" />}
           Clear history
         </Button>
