@@ -18,6 +18,8 @@ import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter } from "next/navigation"
 
+// import { useProjects } from '@/lib/hooks/use-projects'
+
 function getUserInitials(name: string) {
   const [firstName, lastName] = name.split(' ')
   return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2)
@@ -61,7 +63,7 @@ export function UserMenu({ user }: any) {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href="/credits" className="text-xs">            
-              Buy Credits 180
+              Buy Credits
               <IconCoin className="size-3 ml-auto" />
             </Link>
           </DropdownMenuItem>

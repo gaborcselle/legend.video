@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { Scene, ScenePrompt, SceneStill, SceneVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { IconChevronLeft, IconChevronRight, IconPencil, IconRefresh, IconZoom } from '@/components/ui/icons'
+import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconZoom } from '@/components/ui/icons'
 import { useDebouncedCallback } from 'use-debounce';
 
 import { createClient } from '@/utils/supabase/client'
+import { useProjects } from "@/lib/hooks/use-projects";
 
 interface ISceneProps {
   listNumber: number;
@@ -28,6 +29,8 @@ export default function SceneView(props: ISceneProps) {
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [editedPrompt, setEditedPrompt] = useState<string>("");
+
+  const { userProfile, setUserProfile } = useProjects();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +81,7 @@ export default function SceneView(props: ISceneProps) {
 
         if (scenePrompts.data.length > 0) {
           if (sceneStills.data.length === 0) {
-            generateStill(scenePrompts.data[propmtIndex]);
+            generateStill(scenePrompts.data[propmtIndex], true);
           }
         }
 
@@ -216,10 +219,20 @@ export default function SceneView(props: ISceneProps) {
     debounceHandleVideoNavigation(newIndex)
   };
 
-  const generateStill = async (prompt?: ScenePrompt) => {
+  const generateStill = async (prompt?: ScenePrompt, initial?: boolean) => {
+    if ((userProfile?.credits || 0) < 1) return
     setIsStillGenerating(true);
     let newPrompt: ScenePrompt | undefined;
     try {
+      if (!initial) {
+        if (!userProfile) {
+          throw new Error('User profile not found');
+        }
+        setUserProfile({
+          ...userProfile,
+          credits: userProfile.credits! - 1
+        })
+      }
       // check if we have to create a new prompt
       if (isEditable) {
         const { data: { user } } = await supabase.auth.getUser();
@@ -300,6 +313,12 @@ export default function SceneView(props: ISceneProps) {
         setCurrentStillIndex(stills.length);
       }
     } catch (error) {
+      if (userProfile && !initial) {
+        setUserProfile({
+          ...userProfile,
+          credits: userProfile.credits! + 1
+        })
+      }
       console.log(error);
     }
     setIsStillGenerating(false);
@@ -324,11 +343,16 @@ export default function SceneView(props: ISceneProps) {
   }
 
   const generateVideo = async () => {
+    if ((userProfile?.credits || 0) < 10) return
     setIsVideoGenerating(true);
     try {
-      if (!prompts || prompts.length === 0 || !prompts[0]?.prompt) {
-        throw new Error('No prompt provided');
+      if (!userProfile) {
+        throw new Error('User profile not found');
       }
+      setUserProfile({
+        ...userProfile,
+        credits: userProfile.credits! - 10
+      })
       const response = await fetch('/api/gen_store_video', {
         method: 'POST',
         headers: {
@@ -351,6 +375,12 @@ export default function SceneView(props: ISceneProps) {
       ]);
       setCurrentVideoIndex(videos.length);
     } catch (error) {
+      if (userProfile) {
+        setUserProfile({
+          ...userProfile,
+          credits: userProfile.credits! + 10
+        })
+      }
       console.log(error);
     }
     setIsVideoGenerating(false);
@@ -435,7 +465,8 @@ export default function SceneView(props: ISceneProps) {
                     disabled={
                       isStillGenerating ||
                       (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" ||
-                      (isEditable && (prompts?.[currentPromptIndex]?.prompt || "").trim() === editedPrompt.trim())
+                      (isEditable && (prompts?.[currentPromptIndex]?.prompt || "").trim() === editedPrompt.trim()) ||
+                      (userProfile?.credits || 0) < 1
                     }
                   >
                     {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
@@ -449,7 +480,7 @@ export default function SceneView(props: ISceneProps) {
               }
             </>
           ) : ( 
-            <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading}>
+            <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading || (userProfile?.credits || 0) < 1}>
               {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
             </Button>
           )}
@@ -462,7 +493,10 @@ export default function SceneView(props: ISceneProps) {
               <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
               <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable}><IconChevronRight /></Button>
               {stills && stills[currentStillIndex] && (
-                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating}><IconRefresh /></Button>
+                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1}>
+                  <IconRefresh />
+                  <IconCoin className="ml-2" />
+                </Button>
               )}
             </div>
           )
@@ -477,6 +511,7 @@ export default function SceneView(props: ISceneProps) {
                 isEditable ? (
                   <Button className="min-w-24" onClick={generateVideo} disabled>
                     Generate Video
+                    <IconCoin className="ml-2" />
                   </Button>
                 ) : (
                   <>
@@ -497,10 +532,12 @@ export default function SceneView(props: ISceneProps) {
                 !stills?.[currentStillIndex] ||
                 (prompts?.[currentPromptIndex].prompt ?? "").trim() === "" ||
                 isVideoLoading ||
-                isEditable
+                isEditable || 
+                (userProfile?.credits || 0) < 10
               }
             >
               {isVideoGenerating ? "Generating..." : isVideoLoading ? "Loading..." : "Generate Video"}
+              <IconCoin className="ml-2" />
             </Button>
           )}
         </div>
@@ -512,7 +549,10 @@ export default function SceneView(props: ISceneProps) {
               <span className="mx-2">{currentVideoIndex + 1}/{videos?.length ?? 0}</span>
               <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('next')} disabled={!isNextVideoAvailable}><IconChevronRight /></Button>
               {videos && videos[currentVideoIndex] && (
-                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateVideo} disabled={isVideoGenerating || isStillGenerating}><IconRefresh /></Button>
+                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateVideo} disabled={isVideoGenerating || isStillGenerating || (userProfile?.credits || 0) < 10}>
+                  <IconRefresh />
+                  <IconCoin className="ml-2" />
+                </Button>
               )}
             </div>
           )
