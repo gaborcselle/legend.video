@@ -11,7 +11,7 @@ export default function ConceptView() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Concept</CardTitle>
+        <CardTitle>Project: {project.title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div>{project?.concept ?? ''}</div>
