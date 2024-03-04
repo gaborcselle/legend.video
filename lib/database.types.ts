@@ -256,6 +256,7 @@ export type Database = {
           project_id: number | null
           selected_prompt: number | null
           seq_num: number | null
+          title: string | null
         }
         Insert: {
           created_at?: string
@@ -264,6 +265,7 @@ export type Database = {
           project_id?: number | null
           selected_prompt?: number | null
           seq_num?: number | null
+          title?: string | null
         }
         Update: {
           created_at?: string
@@ -272,6 +274,7 @@ export type Database = {
           project_id?: number | null
           selected_prompt?: number | null
           seq_num?: number | null
+          title?: string | null
         }
         Relationships: [
           {
