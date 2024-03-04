@@ -9,22 +9,35 @@ import { IconPlus } from '@/components/ui/icons'
 import { useProjects } from '@/lib/hooks/use-projects'
 
 export function VideoHistory() {
-  const { resetState } = useProjects()
+  const { resetState, isGeneratingScenes } = useProjects()
 
   return (
     <div className="flex flex-col h-full">
       <div className="px-2 my-4">
-        <Link
-          href="/"
-          className={cn(
-            buttonVariants({ variant: 'outline' }),
-            'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
-          )}
-          onClick={resetState}
-        >
-          <IconPlus className="-translate-x-2 stroke-2" />
-          New Project
-        </Link>
+        {isGeneratingScenes ? (
+          <div
+            className={cn(
+              buttonVariants({ variant: 'outline' }),
+              'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors dark:bg-zinc-900 cursor-not-allowed opacity-50',
+            )}
+          >
+            <IconPlus className="-translate-x-2 stroke-2" />
+            New Project
+          </div>
+  
+        ) : (
+          <Link
+            href="/"
+            className={cn(
+              buttonVariants({ variant: 'outline' }),
+              'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
+            )}
+            onClick={resetState}
+          >
+            <IconPlus className="-translate-x-2 stroke-2" />
+            New Project
+          </Link>
+        )}
       </div>
       <React.Suspense
         fallback={
