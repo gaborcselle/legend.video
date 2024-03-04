@@ -18,6 +18,7 @@ async function UserOrLogin() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  
   return (
     <>
       {user ? (
