@@ -14,6 +14,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
+      className='hover:bg-zinc-200 dark:hover:bg-zinc-300/10'
       onClick={() => {
         startTransition(() => {
           setTheme(theme === 'light' ? 'dark' : 'light')

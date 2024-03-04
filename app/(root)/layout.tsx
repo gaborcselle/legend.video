@@ -1,6 +1,5 @@
 "use client"
 
-import { ProjectHistory } from '@/components/project-history'
 import { SidebarDesktop } from '@/components/sidebar-desktop'
 import { SidebarMobile } from '@/components/sidebar-mobile'
 

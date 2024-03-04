@@ -1,16 +1,13 @@
 import * as React from 'react'
 import Link from 'next/link'
 
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
-  IconNextChat,
   IconLegendVideo,
   IconSeparator,
 } from '@/components/ui/icons'
 import { UserMenu } from '@/components/user-menu'
-import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
-import { ProjectHistory } from './project-history'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 

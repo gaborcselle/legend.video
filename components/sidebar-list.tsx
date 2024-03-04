@@ -94,7 +94,7 @@ export function SidebarList() {
           </div>
         )}
       </div>
-      <div className="flex items-center justify-between p-4">
+      <div className="flex items-center justify-between p-2">
         <CreditsView />
         <ThemeToggle />
         <ClearHistory clearProjects={clearProjects} isEnabled={projects?.length > 0} />
