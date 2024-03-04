@@ -22,6 +22,16 @@ export async function POST(req: NextRequest) {
         })
     }
 
+    let userProfile = await supabase.from('user_profiles').select().eq('owner_id', user.id);
+
+    if (userProfile.error) {
+        return new Response('Error fetching user profile', { status: 500 });
+    }
+
+    if (userProfile.data[0].credits < 10) {
+        return new Response('Not enough credits', { status: 402 });
+    }
+
     const json = await req.json()
 
     const { scene_still_id, seq_num, image_url } = json;
@@ -81,6 +91,28 @@ export async function POST(req: NextRequest) {
 
     // Get JPG URL from putResult
     const mp4URL = putResult.url;
+
+    userProfile = await supabase.from('user_profiles').select().eq('owner_id', user.id);
+
+    if (userProfile.error) {
+        return new Response('Error fetching user profile', { status: 500 });
+    }
+
+    if (userProfile.data[0].credits < 10) {
+        return new Response('Not enough credits', { status: 402 });
+    }
+
+    const newUserProfile = await supabase
+        .from('user_profiles')
+        .update({
+            credits: userProfile.data[0].credits - 10
+        })
+        .eq('owner_id', user.id)
+        .select()
+
+    if (newUserProfile.error) {
+        return new Response('Error updating user profile', { status: 500 });
+    }
 
     const video = await supabase
         .from('scene_videos')

@@ -27,7 +27,7 @@ const exampleConcepts = [
 ]
 
 export default function ConceptSetup() {
-  const { project, projects, setProject, setProjects, setScenes, setIsGeneratingScenes } = useProjects()
+  const { project, projects, setProject, setProjects, setScenes, setIsGeneratingScenes, setUserProfile, userProfile } = useProjects()
 
   const [sceneCount, setSceneCount] = useState<number[]>([5])
   const [errorMsg, setErrorMsg] = useState<string>('')
@@ -51,6 +51,9 @@ export default function ConceptSetup() {
 
   const generateStories = async () => {
     if ((project?.concept?.length || 0) > 0) {
+      if (!userProfile) {
+        throw new Error('User profile not found');
+      }
       setIsGeneratingScenes(true)
       try {
         const res = await fetch('/api/gen_project', {
@@ -64,6 +67,10 @@ export default function ConceptSetup() {
             style: project?.style,
             numScenes: sceneCount[0]
           }),
+        })
+        setUserProfile({
+          ...userProfile,
+          credits: userProfile.credits! - sceneCount[0]
         })
   
         if (!res.ok) {
