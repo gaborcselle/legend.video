@@ -57,6 +57,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
       title: ''
     });
     setScenes([]);
+    setIsGeneratingScenes(false);
   }
 
   return (

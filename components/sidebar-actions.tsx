@@ -35,7 +35,7 @@ export function SidebarActions({project: project}: SidebarActionsProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [isRemovePending, startRemoveTransition] = React.useTransition()
 
-  const { setProjects, projects } = useProjects()
+  const { setProjects, projects, resetState } = useProjects()
 
   const removeProject = async () => {
     try {
@@ -93,6 +93,7 @@ export function SidebarActions({project: project}: SidebarActionsProps) {
                 startRemoveTransition(async () => {
                   await removeProject()
                   setDeleteDialogOpen(false)
+                  resetState()
                   toast.success('Project deleted')
                   router.push('/')
                 })
