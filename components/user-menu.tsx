@@ -32,6 +32,7 @@ export function UserMenu({ user }: any) {
   const signOut = async () => {
     await supabase.auth.signOut();
     router.push('/sign-in');
+    router.refresh();
   };
 
   return (
