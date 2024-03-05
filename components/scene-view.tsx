@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card"
 import ShotView from '@/components/shot-view'
 
-import { useProjects } from '@/lib/hooks/use-projects'
 import { toast } from 'react-hot-toast'
 import { Scene, Shot } from '@/lib/types';
 import { cn } from '@/lib/utils'
