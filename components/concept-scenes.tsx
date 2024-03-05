@@ -22,7 +22,7 @@ export default function ConceptScenes() {
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>, index: number) => {
-    event.preventDefault();
+    // event.preventDefault();
     if (draggedItem === null || draggedItem.seq_num === index) return;
     let updatedScenes = [...scenes];
     updatedScenes = updatedScenes.filter(scene => scene.id !== draggedItem.id);
@@ -39,7 +39,9 @@ export default function ConceptScenes() {
     setDraggedItem(null);
   };
 
-  const handleDrop = () => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>, index: number) => {
+    // event.preventDefault();
+    // if (draggedItem === null || draggedItem.seq_num === index) return;
     try {
       scenes.forEach(async (scene, index) => {
         const { error } = await supabase
@@ -75,7 +77,7 @@ export default function ConceptScenes() {
                     onDragStart={() => handleDragStart(scene)}
                     onDragOver={(event) => handleDragOver(event, index)}
                     onDragEnd={handleDragEnd}
-                    onDrop={handleDrop} 
+                    onDrop={(event) => handleDrop(event, index)} 
                     className={cn(
                       'flex bg-white dark:bg-neutral-950',
                       draggedItem?.id === scene.id && 'border border-black rounded-sm opacity-30'
@@ -89,6 +91,7 @@ export default function ConceptScenes() {
                     <SceneView
                       listNumber={index + 1}
                       scene={scene}
+                      isDraggable={isDraggable}
                     />
                   </div>
                 ))
