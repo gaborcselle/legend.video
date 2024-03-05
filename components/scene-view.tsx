@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button"
 import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconZoom } from '@/components/ui/icons'
 import { useDebouncedCallback } from 'use-debounce';
 
+import LoadingIndicator from '@/components/loading-indicator'
+
 import { createClient } from '@/utils/supabase/client'
 import { useProjects } from "@/lib/hooks/use-projects";
+import { useExecTimeCounter } from "@/lib/hooks/use-exec-time-counter";
 
 interface ISceneProps {
   listNumber: number;
@@ -31,6 +34,8 @@ export default function SceneView(props: ISceneProps) {
   const [editedPrompt, setEditedPrompt] = useState<string>("");
 
   const { userProfile, setUserProfile } = useProjects();
+
+  const { execTime, pending, setPending } = useExecTimeCounter()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -329,6 +334,7 @@ export default function SceneView(props: ISceneProps) {
   const generateVideo = async () => {
     if ((userProfile?.credits || 0) < 20) return
     setIsVideoGenerating(true);
+    setPending(true);
     try {
       if (!userProfile) {
         throw new Error('User profile not found');
@@ -368,6 +374,7 @@ export default function SceneView(props: ISceneProps) {
       console.log(error);
     }
     setIsVideoGenerating(false);
+    setPending(false);
   };
 
   const reGenerateVideo = async () => {
@@ -508,7 +515,7 @@ export default function SceneView(props: ISceneProps) {
             </>
           ) : (
             <Button
-              className="min-w-24"
+              className="min-w-24 gap-2 whitespace-nowrap"
               onClick={generateVideo}
               disabled={
                 isVideoGenerating ||
@@ -520,8 +527,24 @@ export default function SceneView(props: ISceneProps) {
                 (userProfile?.credits || 0) < 10
               }
             >
-              {isVideoGenerating ? "Generating..." : isVideoLoading ? "Loading..." : "Generate Video"}
-              <IconCoin className="ml-2" />
+              {
+                isVideoGenerating ? (
+                  <>
+                    <LoadingIndicator />
+                    { `${execTime}s` }
+                  </>
+                ) : isVideoLoading ? (
+                  <>
+                    <LoadingIndicator/>
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    Generate Video
+                    <IconCoin />
+                  </>
+                )
+              }
             </Button>
           )}
         </div>
