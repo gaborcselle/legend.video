@@ -1,5 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { cn } from '@/lib/utils'
+import { IconCoin } from "./ui/icons";
 
 interface ICreditOptionProps {
   amount: number;
@@ -14,8 +15,11 @@ export default function CreditOption({amount, price, setAmount, className}: ICre
       onClick={() => setAmount(amount)}
       className={cn("min-w-56 flex flex-col items-center cursor-pointer", className)}
     >
-      <CardHeader className="font-bold">{amount}</CardHeader>
-      <CardContent>Credits</CardContent>
+      <CardHeader className="font-bold items-center flex-row">
+        <IconCoin />
+        {amount} 
+        &nbsp;Credits
+      </CardHeader>
       <CardFooter>{price}</CardFooter>
     </Card>
   )

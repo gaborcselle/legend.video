@@ -51,9 +51,9 @@ export default function Credits() {
     <div className="flex flex-col items-center p-10 gap-10">
       <h1 className="text-2xl font-bold text-center">Add Credits</h1>
       <div className="flex flex-col lg:flex-row gap-10">
-        <CreditOption className={amount === 100 ? "border border-primary" : ""} amount={100} setAmount={setAmount} price="5$" />
-        <CreditOption className={amount === 1000 ? "border border-primary" : ""} amount={1000} setAmount={setAmount} price="30$" />
-        <CreditOption className={amount === 10000 ? "border border-primary" : ""} amount={10000} setAmount={setAmount} price="50$" />
+        <CreditOption className={amount === 100 ? "border border-primary" : ""} amount={100} setAmount={setAmount} price="USD $5" />
+        <CreditOption className={amount === 1000 ? "border border-primary" : ""} amount={1000} setAmount={setAmount} price="USD $30" />
+        <CreditOption className={amount === 10000 ? "border border-primary" : ""} amount={10000} setAmount={setAmount} price="USD $50" />
       </div>
       <Button onClick={addCredits} disabled={isLoading || !amount}>
         {isLoading ? "Adding..." : "Add Credits"}

@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         return new Response('Error fetching user profile', { status: 500 });
     }
 
-    if (userProfile.data[0].credits < 10) {
+    if (userProfile.data[0].credits < 20) {
         return new Response('Not enough credits', { status: 402 });
     }
 
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
     const newUserProfile = await supabase
         .from('user_profiles')
         .update({
-            credits: userProfile.data[0].credits - 10
+            credits: userProfile.data[0].credits - 20
         })
         .eq('owner_id', user.id)
         .select()

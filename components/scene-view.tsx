@@ -87,7 +87,7 @@ export default function SceneView(props: ISceneProps) {
 
         if (scenePrompts.data.length > 0) {
           if (sceneStills.data.length === 0) {
-            generateStill(scenePrompts.data[propmtIndex], true);
+            generateStill(scenePrompts.data[propmtIndex]);
           }
         }
 
@@ -225,20 +225,10 @@ export default function SceneView(props: ISceneProps) {
     debounceHandleVideoNavigation(newIndex)
   };
 
-  const generateStill = async (prompt?: ScenePrompt, initial?: boolean) => {
-    if ((userProfile?.credits || 0) < 1) return
+  const generateStill = async (prompt?: ScenePrompt) => {
     setIsStillGenerating(true);
     let newPrompt: ScenePrompt | undefined;
     try {
-      if (!initial) {
-        if (!userProfile) {
-          throw new Error('User profile not found');
-        }
-        setUserProfile({
-          ...userProfile,
-          credits: userProfile.credits! - 1
-        })
-      }
       // check if we have to create a new prompt
       if (isEditable) {
         const { data: { user } } = await supabase.auth.getUser();
@@ -319,12 +309,6 @@ export default function SceneView(props: ISceneProps) {
         setCurrentStillIndex(stills.length);
       }
     } catch (error) {
-      if (userProfile && !initial) {
-        setUserProfile({
-          ...userProfile,
-          credits: userProfile.credits! + 1
-        })
-      }
       console.log(error);
     }
     setIsStillGenerating(false);
@@ -349,7 +333,7 @@ export default function SceneView(props: ISceneProps) {
   }
 
   const generateVideo = async () => {
-    if ((userProfile?.credits || 0) < 10) return
+    if ((userProfile?.credits || 0) < 20) return
     setIsVideoGenerating(true);
     try {
       if (!userProfile) {
@@ -357,7 +341,7 @@ export default function SceneView(props: ISceneProps) {
       }
       setUserProfile({
         ...userProfile,
-        credits: userProfile.credits! - 10
+        credits: userProfile.credits! - 20
       })
       const response = await fetch('/api/gen_store_video', {
         method: 'POST',

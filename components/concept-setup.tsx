@@ -70,7 +70,7 @@ export default function ConceptSetup() {
         })
         setUserProfile({
           ...userProfile,
-          credits: userProfile.credits! - sceneCount[0]
+          credits: userProfile.credits! - 20
         })
   
         if (!res.ok) {
