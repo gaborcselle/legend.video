@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
     const newUserProfile = await supabase
         .from('user_profiles')
         .update({
-            credits: userProfile.data[0].credits - 10
+            credits: userProfile.data[0].credits - 20
         })
         .eq('owner_id', user.id)
         .select()
