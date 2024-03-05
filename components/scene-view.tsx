@@ -17,6 +17,7 @@ import { useProjects } from "@/lib/hooks/use-projects";
 interface ISceneProps {
   listNumber: number;
   scene: Scene;
+  isDraggable: boolean;
 }
 
 export default function SceneView(props: ISceneProps) {
@@ -34,7 +35,6 @@ export default function SceneView(props: ISceneProps) {
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [editedPrompt, setEditedPrompt] = useState<string>("");
-  const [isDraggable, setIsDraggable] = useState<boolean>(false);
 
   const { userProfile, setUserProfile } = useProjects();
 
@@ -428,18 +428,138 @@ export default function SceneView(props: ISceneProps) {
   const isNextVideoAvailable = currentVideoIndex < (videos?.length ?? 0) - 1;
 
   return (
-    <>
+    <div className="flex flex-col flex-1">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
           <AccordionTrigger className="font-bold">
             {prompts[currentPromptIndex]?.prompt?.slice(0, 10) ?? ""}
           </AccordionTrigger>
           <AccordionContent>
-            {prompts[currentPromptIndex]?.prompt ?? ""}
+          <div className="flex flex-col flex-1">
+            {isEditable ? (
+              <Textarea
+                rows={7}
+                value={isEditable ? editedPrompt : prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}
+                onChange={(e) => handlePromptChange(e.target.value)}
+                disabled={!isEditable || isStillGenerating || isVideoGenerating}
+              />
+              ) : (
+                <div className="text-sm rounded-lg">{prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}</div>
+              )}
+              <div className="flex items-center mt-2">
+                <Button className="rounded-full p-2" onClick={() => navigatePrompts('prev')} variant="ghost" disabled={!isPrevPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronLeft /></Button>
+                <span className="mx-2">
+                  {
+                    isEditable ? `${prompts?.length + 1}/${prompts?.length + 1}` : `${currentPromptIndex + 1}/${prompts?.length}`
+                  }
+                </span>
+                <Button className="rounded-full p-2"  onClick={() => navigatePrompts('next')} variant="ghost" disabled={!isNextPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronRight /></Button>
+                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={toggleEdit} disabled={isStillGenerating || isVideoGenerating}><IconPencil /></Button>
+              </div>
+            </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-    </>
+      {
+        !props.isDraggable && (<div>
+          <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
+            {videos && videos[currentVideoIndex] ? (
+              <video
+                src={videos[currentVideoIndex].video_url ?? ""}
+                controls
+                poster={stills[currentStillIndex].still_url ?? ""}
+              />
+            ) : (
+              <>
+                {(stills && stills[currentStillIndex]) ? (
+                  <>
+                    {
+                      isEditable ? (
+                        <Button
+                          className="min-w-24"
+                          onClick={() => generateStill()}
+                          disabled={
+                            isStillGenerating ||
+                            (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" ||
+                            (isEditable && (prompts?.[currentPromptIndex]?.prompt || "").trim() === editedPrompt.trim()) ||
+                            (userProfile?.credits || 0) < 1
+                          }
+                        >
+                          {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
+                        </Button>
+                      ) : (
+                        <>
+                          <img className="cursor-pointer" src={stills[currentStillIndex].still_url ?? ""} alt="Still" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')} />
+                        </>
+                      )
+                    }
+                  </>
+                ) : ( 
+                  <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading || (userProfile?.credits || 0) < 1}>
+                    {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+
+
+          <div className="grid grid-cols-12 mt-2">
+            {
+              ((stills?.length ?? 0) > 0 && !isEditable) && (
+                <div className="flex items-center col-span-6">
+                  <span>Still:</span>
+                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable}><IconChevronLeft /></Button>
+                  <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
+                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable}><IconChevronRight /></Button>
+                  {stills && stills[currentStillIndex] && (
+                    <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1}>
+                      <IconRefresh />
+                    </Button>
+                  )}
+                </div>
+              )
+            }
+            {
+              ((videos?.length ?? 0) > 0 && !isEditable) ? (
+                <div className="flex items-center col-span-6">
+                  <span>Video:</span>
+                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('prev')} disabled={!isPrevVideoAvailable}><IconChevronLeft /></Button>
+                  <span className="mx-2">{currentVideoIndex + 1}/{videos?.length ?? 0}</span>
+                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('next')} disabled={!isNextVideoAvailable}><IconChevronRight /></Button>
+                  {videos && videos[currentVideoIndex] && (
+                    <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateVideo} disabled={isVideoGenerating || isStillGenerating || (userProfile?.credits || 0) < 10}>
+                      <IconRefresh />
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center col-span-6">
+                  <span>Video:</span>
+                  <Button
+                    className="ml-3 rounded-sm py-2 px-4"
+                    onClick={generateVideo}
+                    disabled={
+                      isVideoGenerating ||
+                      isStillGenerating ||
+                      !stills?.[currentStillIndex] ||
+                      (prompts?.[currentPromptIndex].prompt ?? "").trim() === "" ||
+                      isVideoLoading ||
+                      isEditable || 
+                      (userProfile?.credits || 0) < 10
+                    }
+                  >
+                    Animate
+                    <IconCoin className="ml-2" />
+                    20
+                  </Button>
+                </div>
+              )
+            }
+          </div>
+        </div>)
+      }
+    </div>
   )
 
   return (
