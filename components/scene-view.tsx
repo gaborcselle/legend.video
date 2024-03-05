@@ -3,6 +3,12 @@ import { Scene, ScenePrompt, SceneStill, SceneVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconZoom } from '@/components/ui/icons'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { useDebouncedCallback } from 'use-debounce';
 
 import { createClient } from '@/utils/supabase/client'
@@ -11,7 +17,6 @@ import { useProjects } from "@/lib/hooks/use-projects";
 interface ISceneProps {
   listNumber: number;
   scene: Scene;
-  index: number; // Added index
 }
 
 export default function SceneView(props: ISceneProps) {
@@ -29,6 +34,7 @@ export default function SceneView(props: ISceneProps) {
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [editedPrompt, setEditedPrompt] = useState<string>("");
+  const [isDraggable, setIsDraggable] = useState<boolean>(false);
 
   const { userProfile, setUserProfile } = useProjects();
 
@@ -420,6 +426,21 @@ export default function SceneView(props: ISceneProps) {
   const isNextStillAvailable = currentStillIndex < (stills?.length ?? 0) - 1;
   const isPrevVideoAvailable = currentVideoIndex > 0;
   const isNextVideoAvailable = currentVideoIndex < (videos?.length ?? 0) - 1;
+
+  return (
+    <>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="font-bold">
+            {prompts[currentPromptIndex]?.prompt?.slice(0, 10) ?? ""}
+          </AccordionTrigger>
+          <AccordionContent>
+            {prompts[currentPromptIndex]?.prompt ?? ""}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </>
+  )
 
   return (
     <div className="grid grid-cols-12 gap-4 mt-3">
