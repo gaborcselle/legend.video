@@ -25,7 +25,13 @@ function genFunctionCallArray(numberOfScenes: number) {
             description: `The description for scene number ${i}`,
         };
 
+        const sceneTitleForChatCall = {
+            type: "string",
+            description: `The title for scene number ${i}`,
+        };
+
         functionParameters[`scene_${i}_description`] = sceneParamForChatCall;
+        functionParameters[`scene_${i}_title`] = sceneTitleForChatCall;
         requiredSceneDescriptions.push(`scene_${i}_description`);
     }
 
@@ -67,8 +73,8 @@ async function chatCompletionRequest(messages: any[], tools: any[] = [], toolCho
 // Updated to include title generation
 async function genSceneDescriptions(conceptPrompt: string, maxScenes: number = 5) {
     const messages = [
-        {role: "system", content: "Given the description of the concept for a video, generate a short 2-4 word title and call a video generator function called 'render_video_with_scenes' with descriptions for each scene. Describe each scene in exhaustive detail, and include a description of the characters in each scene. Don't preface with 'Scene 1' and the like, just the description."},
-        {role: "user", content: `${conceptPrompt}\n\n These should be ${maxScenes} scenes in total, with the descriptions being passed into the 'scene_N_description' parameter for scene number N. The title for the video should be in the 'title' parameter.`},
+        {role: "system", content: "Given the description of the concept for a video, generate a short 2-4 word title and call a video generator function called 'render_video_with_scenes' with titles and descriptions for each scene. Describe each scene in exhaustive detail, and include a description of the characters in each scene. Don't preface with 'Scene 1' and the like, just the description."},
+        {role: "user", content: `${conceptPrompt}\n\n These should be ${maxScenes} scenes in total, with the title for each scene passed into 'scene_N_title', and scene descriptions being passed into 'scene_N_description' for scene number N. The title for the whole video should be in the 'title' parameter.`},
     ];
 
     const functionCallArray = genFunctionCallArray(maxScenes);
@@ -129,12 +135,13 @@ export async function POST(req: NextRequest)  {
         }
 
         let scenesPayload = []
-        for (let i = 0; i < Object.keys(scenesDict).length-1; i++) {
+        for (let i = 0; i < numScenes; i++) {
             scenesPayload.push({
                 owner_id: user.id,
                 project_id: project.data[0].id,
                 selected_prompt: 0,
-                seq_num: i
+                seq_num: i,
+                title: scenesDict[`scene_${i + 1}_title`],
             })
         }
 
@@ -145,7 +152,7 @@ export async function POST(req: NextRequest)  {
         }
 
         let promptsPayload = []
-        for (let i = 0; i < Object.keys(scenesDict).length-1; i++) {
+        for (let i = 0; i < numScenes; i++) {
             promptsPayload.push({
                 owner_id: user.id,
                 scene_id: scenes.data[i].id,
