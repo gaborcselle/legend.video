@@ -24,7 +24,7 @@ export default function VideoPage({ params }: { params: { id: string } }) {
         if (project.data) {
           setProject(project.data[0])
         }
-        const scenes = await supabase.from('scenes').select('*').eq('project_id', params.id).order('id', { ascending: true })
+        const scenes = await supabase.from('scenes').select('*').eq('project_id', params.id).order('seq_num', { ascending: true })
         if (scenes.error) {
           throw new Error(scenes.error.message)
         }
