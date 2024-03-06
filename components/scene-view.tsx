@@ -530,7 +530,7 @@ export default function SceneView(props: ISceneProps) {
               ((stills?.length ?? 0) > 0 && !isEditable) && (
                 // adjust the grid layout here
                 <div className={cn("flex items-center col-span-12 md:col-span-12 lg:col-span-6",
-                  isSidebarOpen && "lg:col-span-12 xl:col-span-6"
+                  isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
                 )}>
                   <span>Still:</span>
                   <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable || isStillGenerating || isVideoGenerating}><IconChevronLeft /></Button>
@@ -548,7 +548,7 @@ export default function SceneView(props: ISceneProps) {
               ((videos?.length ?? 0) > 0 && !isEditable) ? (
                 // adjust the grid layout here
                 <div className={cn("flex items-center col-span-12 md:col-span-12 lg:col-span-6",
-                  isSidebarOpen && "lg:col-span-12 xl:col-span-6"
+                  isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
                 )}>
                   <span>Video:</span>
                   <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('prev')} disabled={!isPrevVideoAvailable || isStillGenerating || isVideoGenerating}><IconChevronLeft /></Button>
