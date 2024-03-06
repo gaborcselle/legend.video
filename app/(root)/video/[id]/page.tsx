@@ -11,7 +11,7 @@ export default function VideoPage({ params }: { params: { id: string } }) {
 
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string>()
-  const { setProject, setScenes } = useProjects()
+  const { setProject, setScenes, setShots } = useProjects()
   
   useEffect(() => {
     const getProject = async () => {

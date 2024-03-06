@@ -13,6 +13,9 @@ export type ProjectInput = Database['public']['Tables']['projects']['Insert']
 export type Scene = Database['public']['Tables']['scenes']['Row']
 export type SceneInput = Database['public']['Tables']['scenes']['Insert']
 
+export type Shot = Database['public']['Tables']['shots']['Row']
+export type ShotInput = Database['public']['Tables']['shots']['Insert']
+
 export type ScenePrompt = Database['public']['Tables']['scene_prompts']['Row']
 export type ScenePromptInput = Database['public']['Tables']['scene_prompts']['Insert']
 
