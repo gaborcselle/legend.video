@@ -296,6 +296,186 @@ export type Database = {
           }
         ]
       }
+      shot_prompts: {
+        Row: {
+          created_at: string
+          id: number
+          owner_id: string | null
+          prompt: string | null
+          selected_still: number | null
+          seq_num: number | null
+          shot_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          owner_id?: string | null
+          prompt?: string | null
+          selected_still?: number | null
+          seq_num?: number | null
+          shot_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          owner_id?: string | null
+          prompt?: string | null
+          selected_still?: number | null
+          seq_num?: number | null
+          shot_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_shot_prompts_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_shot_prompts_shot_id_fkey"
+            columns: ["shot_id"]
+            isOneToOne: false
+            referencedRelation: "shots"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      shot_stills: {
+        Row: {
+          created_at: string
+          id: number
+          owner_id: string | null
+          selected_video: number | null
+          seq_num: number | null
+          shot_prompt_id: number | null
+          still_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          owner_id?: string | null
+          selected_video?: number | null
+          seq_num?: number | null
+          shot_prompt_id?: number | null
+          still_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          owner_id?: string | null
+          selected_video?: number | null
+          seq_num?: number | null
+          shot_prompt_id?: number | null
+          still_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_shot_stills_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_shot_stills_shot_prompt_id_fkey"
+            columns: ["shot_prompt_id"]
+            isOneToOne: false
+            referencedRelation: "shot_prompts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      shot_videos: {
+        Row: {
+          created_at: string
+          id: number
+          owner_id: string | null
+          seq_num: number | null
+          shot_still_id: number | null
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          owner_id?: string | null
+          seq_num?: number | null
+          shot_still_id?: number | null
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          owner_id?: string | null
+          seq_num?: number | null
+          shot_still_id?: number | null
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_shot_videos_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_shot_videos_shot_still_id_fkey"
+            columns: ["shot_still_id"]
+            isOneToOne: false
+            referencedRelation: "shot_stills"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      shots: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          owner_id: string | null
+          scene_id: number | null
+          selected_prompt: number | null
+          seq_num: number | null
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          owner_id?: string | null
+          scene_id?: number | null
+          selected_prompt?: number | null
+          seq_num?: number | null
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          owner_id?: string | null
+          scene_id?: number | null
+          selected_prompt?: number | null
+          seq_num?: number | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_shots_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_shots_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       test: {
         Row: {
           created_at: string
