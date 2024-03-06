@@ -74,9 +74,9 @@ export default function ConceptScenes() {
                 onDragEnd={handleDragEnd}
                 onDrop={(event) => handleDrop(event, index)} 
                 className={cn(
-                  'flex bg-white dark:bg-neutral-950 col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6',
+                  'flex bg-white dark:bg-neutral-950 col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4',
                   draggedItem?.id === scene.id && 'border border-black rounded-sm opacity-30',
-                  isSidebarOpen && 'md:col-span-12 lg:col-span-6 xl:col-span-6'
+                  isSidebarOpen && 'md:col-span-12 lg:col-span-6 xl:col-span-4'
                 )}
               >
                 <CardContent className='w-full'>

@@ -5,7 +5,7 @@ import ConceptScenes from "@/components/concept-scenes"
 
 export default function ProjectView() {
   return (
-    <div className="mx-auto max-w-4xl px-4 my-10">
+    <div className="mx-auto px-4 my-10">
       <ConceptHeader />
       <ConceptScenes />
     </div>

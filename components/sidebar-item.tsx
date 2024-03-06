@@ -35,6 +35,10 @@ export function SidebarItem({ index, project, children }: SidebarItemProps) {
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
   const shouldAnimate = index === 0 && isActive && newChatId
 
+  const handleLinkClick = () => {
+    if (window.innerWidth < 1024) toggleSidebar()
+  }
+
   if (!project?.id) return null
 
   return (
@@ -96,7 +100,7 @@ export function SidebarItem({ index, project, children }: SidebarItemProps) {
             'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',
             isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800'
           )}
-          onClick={toggleSidebar}
+          onClick={handleLinkClick}
         >
           <div
             className="relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
