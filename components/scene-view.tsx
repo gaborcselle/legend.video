@@ -9,6 +9,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
 import { useDebouncedCallback } from 'use-debounce';
 
 import { createClient } from '@/utils/supabase/client'
@@ -435,11 +440,16 @@ export default function SceneView(props: ISceneProps) {
         <AccordionItem value="item-1">
           <AccordionTrigger className="font-bold">
             <div className="flex items-center">
-              <StretchHorizontalIcon
-                className="border border-gray-300 rounded-sm p-1 my-4 mr-3 cursor-pointer "
-                onMouseDown={() => props.setIsDraggable(true)}
-                onMouseUp={() => props.setIsDraggable(false)}
-              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <StretchHorizontalIcon
+                    className="border border-gray-300 rounded-sm p-1 my-4 mr-3 cursor-pointer hidden lg:block"
+                    onMouseDown={() => props.setIsDraggable(true)}
+                    onMouseUp={() => props.setIsDraggable(false)}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>Click and drag to reorder</TooltipContent>
+              </Tooltip>
               {/* TODO(gabor): remove the prompt slice as appropriate */}
               {scene?.[0]?.title ?? prompts[currentPromptIndex]?.prompt?.slice(0, 10) ?? ""}              
             </div>
@@ -584,145 +594,4 @@ export default function SceneView(props: ISceneProps) {
       }
     </div>
   )
-
-  return (
-    <div className="grid grid-cols-12 gap-4 mt-3">
-      <div className="font-bold text-lg lg:hidden">{props.listNumber}.</div>
-      <div className="col-span-12 lg:col-span-6">
-        <div className="mb-1 lg:hidden">Concepts:</div>
-        <div className="flex">
-          <div className="mr-4 min-w-4 hidden lg:block">{props.listNumber}.</div>
-          <div className="flex flex-col flex-1">
-            {isEditable ? (
-            <Textarea
-              rows={7}
-              value={isEditable ? editedPrompt : prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}
-              onChange={(e) => handlePromptChange(e.target.value)}
-              disabled={!isEditable || isStillGenerating || isVideoGenerating}
-            />
-            ) : (
-              <div className="text-sm rounded-lg p-1">{prompts && prompts.length > 0 ? prompts[currentPromptIndex].prompt ?? "" : ""}</div>
-            )}
-            <div className="flex items-center mt-2">
-              <Button className="rounded-full p-2" onClick={() => navigatePrompts('prev')} variant="ghost" disabled={!isPrevPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronLeft /></Button>
-              <span className="mx-2">
-                {
-                  isEditable ? `${prompts?.length + 1}/${prompts?.length + 1}` : `${currentPromptIndex + 1}/${prompts?.length}`
-                }
-              </span>
-              <Button className="rounded-full p-2"  onClick={() => navigatePrompts('next')} variant="ghost" disabled={!isNextPromptAvailable || isStillGenerating || isVideoGenerating || isEditable}><IconChevronRight /></Button>
-              <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={toggleEdit} disabled={isStillGenerating || isVideoGenerating}><IconPencil /></Button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-span-12 lg:col-span-3">
-        <div className="mb-1 lg:hidden">Stills:</div>
-        <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
-          {(stills && stills[currentStillIndex]) ? (
-            <>
-              {
-                isEditable ? (
-                  <Button
-                    className="min-w-24"
-                    onClick={() => generateStill()}
-                    disabled={
-                      isStillGenerating ||
-                      (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" ||
-                      (isEditable && (prompts?.[currentPromptIndex]?.prompt || "").trim() === editedPrompt.trim()) ||
-                      (userProfile?.credits || 0) < 1
-                    }
-                  >
-                    {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
-                  </Button>
-                ) : (
-                  <>
-                    <img src={stills[currentStillIndex].still_url ?? ""} alt="Still" />
-                    <Button className="mt-2" variant="ghost" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank') || isEditable}><IconZoom /></Button>
-                  </>
-                )
-              }
-            </>
-          ) : ( 
-            <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading || (userProfile?.credits || 0) < 1}>
-              {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
-            </Button>
-          )}
-        </div>
-
-        {
-          ((stills?.length ?? 0) > 0 && !isEditable) && (
-            <div className="flex items-center mt-2">
-              <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable}><IconChevronLeft /></Button>
-              <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
-              <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable}><IconChevronRight /></Button>
-              {stills && stills[currentStillIndex] && (
-                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1}>
-                  <IconRefresh />
-                  <IconCoin className="ml-2" />
-                </Button>
-              )}
-            </div>
-          )
-        }
-      </div>
-      <div className="col-span-12 lg:col-span-3">
-        <div className="mb-1 lg:hidden">Videos:</div>
-        <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
-          {videos && videos[currentVideoIndex] ? (
-            <>
-              {
-                isEditable ? (
-                  <Button className="min-w-24" onClick={generateVideo} disabled>
-                    Generate Video
-                    <IconCoin className="ml-2" />
-                  </Button>
-                ) : (
-                  <>
-                    <video src={videos[currentVideoIndex].video_url ?? ""} controls></video>
-                    <Button className="mt-2" variant="ghost" onClick={() => window.open(videos[currentVideoIndex].video_url ?? "", '_blank')}><IconZoom /></Button>
-                  </>
-                )
-              
-              }
-            </>
-          ) : (
-            <Button
-              className="min-w-24"
-              onClick={generateVideo}
-              disabled={
-                isVideoGenerating ||
-                isStillGenerating ||
-                !stills?.[currentStillIndex] ||
-                (prompts?.[currentPromptIndex].prompt ?? "").trim() === "" ||
-                isVideoLoading ||
-                isEditable || 
-                (userProfile?.credits || 0) < 10
-              }
-            >
-              {isVideoGenerating ? "Generating..." : isVideoLoading ? "Loading..." : "Generate Video"}
-              <IconCoin className="ml-2" />
-            </Button>
-          )}
-        </div>
-
-        {
-          ((videos?.length ?? 0) > 0 && !isEditable) && (
-            <div className="flex items-center mt-2">
-              <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('prev')} disabled={!isPrevVideoAvailable}><IconChevronLeft /></Button>
-              <span className="mx-2">{currentVideoIndex + 1}/{videos?.length ?? 0}</span>
-              <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('next')} disabled={!isNextVideoAvailable}><IconChevronRight /></Button>
-              {videos && videos[currentVideoIndex] && (
-                <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateVideo} disabled={isVideoGenerating || isStillGenerating || (userProfile?.credits || 0) < 10}>
-                  <IconRefresh />
-                  <IconCoin className="ml-2" />
-                </Button>
-              )}
-            </div>
-          )
-        }
-      </div>
-    </div>
-  );
-  
 }
