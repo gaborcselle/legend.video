@@ -251,6 +251,7 @@ export type Database = {
       scenes: {
         Row: {
           created_at: string
+          description: string | null
           id: number
           owner_id: string | null
           project_id: number | null
@@ -260,6 +261,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: number
           owner_id?: string | null
           project_id?: number | null
@@ -269,6 +271,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: number
           owner_id?: string | null
           project_id?: number | null
@@ -428,7 +431,6 @@ export type Database = {
       shots: {
         Row: {
           created_at: string
-          description: string | null
           id: number
           owner_id: string | null
           scene_id: number | null
@@ -438,7 +440,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          description?: string | null
           id?: number
           owner_id?: string | null
           scene_id?: number | null
@@ -448,7 +449,6 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          description?: string | null
           id?: number
           owner_id?: string | null
           scene_id?: number | null
