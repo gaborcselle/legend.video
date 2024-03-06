@@ -26,6 +26,7 @@ interface ISceneProps {
 
 export default function SceneView(props: ISceneProps) {
   const supabase = createClient();
+  const [scene, setScene] = useState<Scene[]>([]);
   const [prompts, setPrompts] = useState<ScenePrompt[]>([]);
   const [stills, setStills] = useState<SceneStill[]>([]);
   const [videos, setVideos] = useState<SceneVideo[]>([]);
@@ -46,6 +47,17 @@ export default function SceneView(props: ISceneProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const scene = await supabase
+          .from('scenes')
+          .select('*')
+          .eq('id', props.scene.id);
+
+        if (scene.error) {
+          throw new Error('Failed to fetch scene');
+        }
+
+        setScene(scene.data);
+
         const scenePrompts = await supabase
           .from('scene_prompts')
           .select('*')
@@ -428,7 +440,8 @@ export default function SceneView(props: ISceneProps) {
                 onMouseDown={() => props.setIsDraggable(true)}
                 onMouseUp={() => props.setIsDraggable(false)}
               />
-              {prompts[currentPromptIndex]?.prompt?.slice(0, 10) ?? ""}
+              {/* TODO(gabor): remove the prompt slice as appropriate */}
+              {scene?.[0]?.title ?? prompts[currentPromptIndex]?.prompt?.slice(0, 10) ?? ""}              
             </div>
           </AccordionTrigger>
           <AccordionContent>
