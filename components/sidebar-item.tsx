@@ -18,6 +18,7 @@ import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { Project } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { useProjects } from '@/lib/hooks/use-projects'
+import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 interface SidebarItemProps {
   index: number
@@ -27,6 +28,7 @@ interface SidebarItemProps {
 
 export function SidebarItem({ index, project, children }: SidebarItemProps) {
   const pathname = usePathname()
+  const { toggleSidebar } = useSidebar()
   const { isGeneratingScenes } = useProjects()
 
   const isActive = pathname === `/video/${project.id}`
@@ -94,6 +96,7 @@ export function SidebarItem({ index, project, children }: SidebarItemProps) {
             'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',
             isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800'
           )}
+          onClick={toggleSidebar}
         >
           <div
             className="relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
