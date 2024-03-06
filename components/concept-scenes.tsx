@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card"
 import SceneView from '@/components/scene-view'
-import { StretchHorizontalIcon } from "lucide-react";
 
 import { useProjects } from '@/lib/hooks/use-projects'
 import { Scene } from '@/lib/types';
