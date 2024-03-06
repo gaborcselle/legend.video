@@ -254,7 +254,8 @@ export async function POST(req: NextRequest) {
                 project_id: project.data[0].id,
                 selected_prompt: 0,
                 seq_num: i,
-                title: scenesDict[`scene_${i + 1}_description`],
+                title: scenesDict[`scene_${i + 1}_title`],
+                description: scenesDict[`scene_${i + 1}_description`],
             });
         }
 
@@ -341,10 +342,15 @@ export async function POST(req: NextRequest) {
             }
         }
 
+        const responsePayload = JSON.stringify({
+            project: project.data[0],
+            scenes: scenes.data,
+        });
+
         console.log('returning project.data[0].id', project.data[0].id);
 
         // return full response
-        return new Response(JSON.stringify({ project_id: project.data[0].id }), { status: 200 });
+        return new Response(responsePayload, { status: 200 });
     } catch (error) {
         const errorMessage = (error as Error)?.message || 'Failed to generate project data.';
         return new Response(errorMessage, { status: 500 });

@@ -16,7 +16,7 @@ const replicate = new Replicate({
 // Then stores the still image in the Vercel Blob store
 // Returns a URL to the still image
 // Input params (in JSON body):
-// - scene_id, prompt_id, prompt, seq_num
+// - shot_id, prompt_id, prompt, seq_num
 
 export async function POST(req: NextRequest)  {
     const { supabase } = createClient(req)
@@ -32,9 +32,9 @@ export async function POST(req: NextRequest)  {
 
     const json = await req.json()
 
-    const { scene_id, prompt_id, prompt, seq_num } = json;
+    const { shot_id, prompt_id, prompt, seq_num } = json;
 
-    if (!scene_id || !prompt_id || !prompt || (seq_num === undefined)) {
+    if (!shot_id || !prompt_id || !prompt || (seq_num === undefined)) {
         return new Response('Missing required parameters', { status: 400 });
     }
 
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest)  {
     }
 
     // add ".jpeg" to the filename
-    const jpgFilename = `still_${scene_id}_${prompt_id}_${replicateOutputFilename}.jpg`;
+    const jpgFilename = `still_${shot_id}_${prompt_id}_${replicateOutputFilename}.jpg`;
     
     // retrieve the png that Replicate output
     const replicateOutput = await fetch(replicateOutputURL);
@@ -93,9 +93,9 @@ export async function POST(req: NextRequest)  {
     const jpgURL = putResult.url;
 
     const still = await supabase
-        .from('scene_stills')
+        .from('shot_stills')
         .insert({
-            scene_prompt_id: prompt_id,
+            shot_prompt_id: prompt_id,
             still_url: jpgURL,
             owner_id: user.id,
             selected_video: 0,

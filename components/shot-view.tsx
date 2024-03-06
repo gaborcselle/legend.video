@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Scene, ScenePrompt, SceneStill, SceneVideo } from '@/lib/types'
+import { Shot, ShotPrompt, ShotStill, ShotVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconZoom } from '@/components/ui/icons'
@@ -22,19 +22,19 @@ import { useSidebar } from "@/lib/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
 import { StretchHorizontalIcon } from "lucide-react";
 
-interface ISceneProps {
+interface IShotProps {
   listNumber: number;
-  scene: Scene;
+  shot: Shot;
   isDraggable: boolean;
   setIsDraggable: (value: boolean) => void;
 }
 
-export default function ShotView(props: ISceneProps) {
+export default function ShotView(props: IShotProps) {
   const supabase = createClient();
-  const [scene, setScene] = useState<Scene[]>([]);
-  const [prompts, setPrompts] = useState<ScenePrompt[]>([]);
-  const [stills, setStills] = useState<SceneStill[]>([]);
-  const [videos, setVideos] = useState<SceneVideo[]>([]);
+  // const [shot, setShot] = useState<Shot[]>([]);
+  const [prompts, setPrompts] = useState<ShotPrompt[]>([]);
+  const [stills, setStills] = useState<ShotStill[]>([]);
+  const [videos, setVideos] = useState<ShotVideo[]>([]);
 
   const [isStillGenerating, setIsStillGenerating] = useState<boolean>(false);
   const [isSillLoading, setIsSillLoading] = useState<boolean>(false);
@@ -52,64 +52,64 @@ export default function ShotView(props: ISceneProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const scene = await supabase
-          .from('scenes')
-          .select('*')
-          .eq('id', props.scene.id);
+        // const shot = await supabase
+        //   .from('shots')
+        //   .select('*')
+        //   .eq('id', props.shot.id);
 
-        if (scene.error) {
-          throw new Error('Failed to fetch scene');
-        }
+        // if (shot.error) {
+        //   throw new Error('Failed to fetch shot');
+        // }
 
-        setScene(scene.data);
+        // setShot(shot.data);
 
-        const scenePrompts = await supabase
-          .from('scene_prompts')
+        const shotPrompts = await supabase
+          .from('shot_prompts')
           .select('*')
           .order('id', { ascending: true })
-          .eq('scene_id', props.scene.id);
+          .eq('shot_id', props.shot.id);
           
-        if (scenePrompts.error) {
+        if (shotPrompts.error) {
           throw new Error('Failed to fetch prompts');
         }
 
-        setPrompts(scenePrompts.data);
-        const propmtIndex = props.scene.selected_prompt ?? 0;
+        setPrompts(shotPrompts.data);
+        const propmtIndex = props.shot.selected_prompt ?? 0;
         setCurrentPromptIndex(propmtIndex);
 
-        const sceneStills = await supabase
-          .from('scene_stills')
+        const shotStills = await supabase
+          .from('shot_stills')
           .select('*')
           .order('id', { ascending: true })
-          .eq('scene_prompt_id', scenePrompts.data[propmtIndex].id);
+          .eq('shot_prompt_id', shotPrompts.data[propmtIndex].id);
 
-        if (sceneStills.error) {
+        if (shotStills.error) {
           throw new Error('Failed to fetch stills');
         }
 
-        setStills(sceneStills.data);
-        const stillIndex = scenePrompts.data[propmtIndex].selected_still ?? 0;
+        setStills(shotStills.data);
+        const stillIndex = shotPrompts.data[propmtIndex].selected_still ?? 0;
         setCurrentStillIndex(stillIndex)
 
-        if (sceneStills.data.length > 0) {
-          const sceneVideos = await supabase
-            .from('scene_videos')
+        if (shotStills.data.length > 0) {
+          const shotVideos = await supabase
+            .from('shot_videos')
             .select('*')
             .order('id', { ascending: true })
-            .eq('scene_still_id', sceneStills.data[stillIndex].id);
+            .eq('shot_still_id', shotStills.data[stillIndex].id);
   
-          if (sceneVideos.error) {
+          if (shotVideos.error) {
             throw new Error('Failed to fetch videos');
           }
 
-          setVideos(sceneVideos.data);
-          const videoIndex = sceneStills.data[stillIndex].selected_video ?? 0;
+          setVideos(shotVideos.data);
+          const videoIndex = shotStills.data[stillIndex].selected_video ?? 0;
           setCurrentVideoIndex(videoIndex);
         }
 
-        if (scenePrompts.data.length > 0) {
-          if (sceneStills.data.length === 0) {
-            generateStill(scenePrompts.data[propmtIndex]);
+        if (shotPrompts.data.length > 0) {
+          if (shotStills.data.length === 0) {
+            generateStill(shotPrompts.data[propmtIndex]);
           }
         }
 
@@ -134,36 +134,36 @@ export default function ShotView(props: ISceneProps) {
 
   const handlePromptNavigation = async (newIndex: number) => {
     try {
-      const sceneStills = await supabase
-        .from('scene_stills')
+      const shotStills = await supabase
+        .from('shot_stills')
         .select('*')
-        .eq('scene_prompt_id', prompts[newIndex].id);
+        .eq('shot_prompt_id', prompts[newIndex].id);
 
-      if (sceneStills.error) {
+      if (shotStills.error) {
         throw new Error('Failed to fetch stills');
       }
 
-      const sceneVideos = await supabase
-        .from('scene_videos')
+      const shotVideos = await supabase
+        .from('shot_videos')
         .select('*')
-        .eq('scene_still_id', sceneStills.data[0].id);
+        .eq('shot_still_id', shotStills.data[0].id);
 
-      if (sceneVideos.error) {
+      if (shotVideos.error) {
         throw new Error('Failed to fetch videos');
       }
 
-      const updatedScene = await supabase
-        .from('scenes')
+      const updatedShot = await supabase
+        .from('shots')
         .update({ 'selected_prompt': prompts[newIndex].seq_num })
-        .eq('id', props.scene.id)
+        .eq('id', props.shot.id)
         .select();
 
-      if (updatedScene.error) {
-        throw new Error('Failed to update scene');
+      if (updatedShot.error) {
+        throw new Error('Failed to update shot');
       }
 
-      setStills(sceneStills.data);
-      setVideos(sceneVideos.data);
+      setStills(shotStills.data);
+      setVideos(shotVideos.data);
 
     } catch (error) {
       console.log(error);
@@ -186,19 +186,19 @@ export default function ShotView(props: ISceneProps) {
 
   const handleStillNavigation = async (newIndex: number) => {
     try {
-      const sceneVideos = await supabase
-        .from('scene_videos')
+      const shotVideos = await supabase
+        .from('shot_videos')
         .select('*')
-        .eq('scene_still_id', stills[newIndex].id);
+        .eq('shot_still_id', stills[newIndex].id);
   
-      if (sceneVideos.error) {
+      if (shotVideos.error) {
         throw new Error('Failed to fetch videos');
       }
   
-      setVideos(sceneVideos.data);
+      setVideos(shotVideos.data);
 
       const updatedPrompt = await supabase
-        .from('scene_prompts')
+        .from('shot_prompts')
         .update({ 'selected_still': newIndex })
         .eq('id', prompts[currentPromptIndex].id)
         .select()
@@ -226,7 +226,7 @@ export default function ShotView(props: ISceneProps) {
   const handleVideoNavigation = async (newIndex: number) => {
     try {
       const updatedStill = await supabase
-        .from('scene_stills')
+        .from('shot_stills')
         .update({ 'selected_video': newIndex })
         .eq('id', stills[currentStillIndex].id)
         .select()
@@ -247,9 +247,9 @@ export default function ShotView(props: ISceneProps) {
     debounceHandleVideoNavigation(newIndex)
   };
 
-  const generateStill = async (prompt?: ScenePrompt) => {
+  const generateStill = async (prompt?: ShotPrompt) => {
     setIsStillGenerating(true);
-    let newPrompt: ScenePrompt | undefined;
+    let newPrompt: ShotPrompt | undefined;
     try {
       // check if we have to create a new prompt
       if (isEditable) {
@@ -260,11 +260,11 @@ export default function ShotView(props: ISceneProps) {
         }
 
         const newPromptRes = await supabase
-          .from('scene_prompts')
+          .from('shot_prompts')
           .insert({
             owner_id: user?.id,
             prompt: editedPrompt,
-            scene_id: props.scene.id,
+            shot_id: props.shot.id,
             selected_still: 0,
             seq_num: prompts.length
           })
@@ -276,14 +276,14 @@ export default function ShotView(props: ISceneProps) {
 
         newPrompt = newPromptRes.data[0];
 
-        const updatedScene = await supabase
-          .from('scenes')
+        const updatedShot = await supabase
+          .from('shots')
           .update({ 'selected_prompt': newPrompt?.seq_num })
-          .eq('id', props.scene.id)
+          .eq('id', props.shot.id)
           .select();
 
-        if (updatedScene.error) {
-          throw new Error('Failed to update scene');
+        if (updatedShot.error) {
+          throw new Error('Failed to update shot');
         }
       }
 
@@ -301,7 +301,7 @@ export default function ShotView(props: ISceneProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          scene_id: props.scene.id,
+          shot_id: props.shot.id,
           prompt_id: isEditable ? newPrompt?.id : currentPrompt.id,
           prompt: encodeURIComponent(isEditable ? newPrompt?.prompt ?? "" : currentPrompt.prompt ?? ""),
           seq_num: isEditable ? 0 : stills[stills.length - 1] ? stills[stills.length - 1].seq_num! + 1 : 0
@@ -341,7 +341,7 @@ export default function ShotView(props: ISceneProps) {
     setVideos([]);
     try {
       const updatedPrompt = await supabase
-        .from('scene_prompts')
+        .from('shot_prompts')
         .update({ 'selected_still': stills.length })
         .eq('id', prompts[currentPromptIndex].id)
         .select() 
@@ -372,7 +372,7 @@ export default function ShotView(props: ISceneProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          scene_still_id: stills[currentStillIndex].id,
+          shot_still_id: stills[currentStillIndex].id,
           image_url: stills[currentStillIndex].still_url,
           seq_num: videos[videos.length - 1] ? videos[videos.length - 1].seq_num! + 1 : 0
         }),
@@ -402,7 +402,7 @@ export default function ShotView(props: ISceneProps) {
   const reGenerateVideo = async () => {
     try {
       const updatedStill = await supabase
-        .from('scene_stills')
+        .from('shot_stills')
         .update({ 'selected_video': videos.length })
         .eq('id', stills[currentStillIndex].id)
         .select()
@@ -434,6 +434,10 @@ export default function ShotView(props: ISceneProps) {
   const isPrevVideoAvailable = currentVideoIndex > 0;
   const isNextVideoAvailable = currentVideoIndex < (videos?.length ?? 0) - 1;
 
+  // return (
+  //   <div>shot view</div>
+  // )
+
   return (
     <div className="flex flex-col flex-1">
       <Accordion type="single" collapsible className="w-full">
@@ -451,7 +455,7 @@ export default function ShotView(props: ISceneProps) {
                 <TooltipContent>Click and drag to reorder</TooltipContent>
               </Tooltip>
               {/* TODO(gabor): remove the prompt slice as appropriate */}
-              {scene?.[0]?.title ?? prompts[currentPromptIndex]?.prompt?.slice(0, 10) ?? ""}              
+              {props.shot?.title ?? "Untitled"}              
             </div>
           </AccordionTrigger>
           <AccordionContent>
@@ -480,118 +484,116 @@ export default function ShotView(props: ISceneProps) {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-      {
-        true && (<div>
-          <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
-            {videos && videos[currentVideoIndex] ? (
-              <video
-                src={videos[currentVideoIndex].video_url ?? ""}
-                controls
-                poster={stills[currentStillIndex].still_url ?? ""}
-                autoPlay
-                loop
-              />
-            ) : (
-              <>
-                {(stills && stills[currentStillIndex]) ? (
-                  <>
-                    {
-                      isEditable ? (
-                        <Button
-                          className="min-w-24"
-                          onClick={() => generateStill()}
-                          disabled={
-                            isStillGenerating ||
-                            (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" ||
-                            (isEditable && (prompts?.[currentPromptIndex]?.prompt || "").trim() === editedPrompt.trim()) ||
-                            (userProfile?.credits || 0) < 1
-                          }
-                        >
-                          {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
-                        </Button>
-                      ) : (
-                        <>
-                          <img className="cursor-pointer" src={stills[currentStillIndex].still_url ?? ""} alt="Still" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')} />
-                        </>
-                      )
-                    }
-                  </>
-                ) : ( 
-                  <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading || (userProfile?.credits || 0) < 1}>
-                    {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
-                  </Button>
-                )}
-              </>
-            )}
-          </div>
-
-          <div className="grid grid-cols-12 mt-2">
-            {
-              ((stills?.length ?? 0) > 0 && !isEditable) && (
-                // adjust the grid layout here
-                <div className={cn("flex items-center col-span-12 md:col-span-12 lg:col-span-6",
-                  isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
-                )}>
-                  <span>Still:</span>
-                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable || isStillGenerating || isVideoGenerating}><IconChevronLeft /></Button>
-                  <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
-                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable || isStillGenerating || isVideoGenerating}><IconChevronRight /></Button>
-                  {stills && stills[currentStillIndex] && (
-                    <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1}>
-                      <IconRefresh />
-                    </Button>
-                  )}
-                </div>
-              )
-            }
-            {
-              ((videos?.length ?? 0) > 0 && !isEditable) ? (
-                // adjust the grid layout here
-                <div className={cn("flex items-center col-span-12 md:col-span-12 lg:col-span-6",
-                  isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
-                )}>
-                  <span>Video:</span>
-                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('prev')} disabled={!isPrevVideoAvailable || isStillGenerating || isVideoGenerating}><IconChevronLeft /></Button>
-                  <span className="mx-2">{currentVideoIndex + 1}/{videos?.length ?? 0}</span>
-                  <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('next')} disabled={!isNextVideoAvailable || isStillGenerating || isVideoGenerating}><IconChevronRight /></Button>
-                  {videos && videos[currentVideoIndex] && (
-                    <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateVideo} disabled={isVideoGenerating || isStillGenerating || (userProfile?.credits || 0) < 10}>
-                      <IconRefresh />
-                    </Button>
-                  )}
-                </div>
-              ) : (
+      <div>
+        <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
+          {videos && videos[currentVideoIndex] ? (
+            <video
+              src={videos[currentVideoIndex].video_url ?? ""}
+              controls
+              poster={stills[currentStillIndex].still_url ?? ""}
+              autoPlay
+              loop
+            />
+          ) : (
+            <>
+              {(stills && stills[currentStillIndex]) ? (
                 <>
                   {
-                    (!isEditable && !isSillLoading) && (
-                      <div className="flex items-center col-span-6">
-                        <span>Video:</span>
-                        <Button
-                          className="ml-3 rounded-sm py-2 px-4"
-                          onClick={generateVideo}
-                          disabled={
-                            isVideoGenerating ||
-                            isStillGenerating ||
-                            !stills?.[currentStillIndex] ||
-                            (prompts?.[currentPromptIndex].prompt ?? "").trim() === "" ||
-                            isVideoLoading ||
-                            isEditable || 
-                            (userProfile?.credits || 0) < 10
-                          }
-                        >
-                          Animate
-                          <IconCoin className="ml-2" />
-                          20
-                        </Button>
-                      </div>
+                    isEditable ? (
+                      <Button
+                        className="min-w-24"
+                        onClick={() => generateStill()}
+                        disabled={
+                          isStillGenerating ||
+                          (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" ||
+                          (isEditable && (prompts?.[currentPromptIndex]?.prompt || "").trim() === editedPrompt.trim()) ||
+                          (userProfile?.credits || 0) < 1
+                        }
+                      >
+                        {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
+                      </Button>
+                    ) : (
+                      <>
+                        <img className="cursor-pointer" src={stills[currentStillIndex].still_url ?? ""} alt="Still" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')} />
+                      </>
                     )
                   }
                 </>
-              )
-            }
-          </div>
-        </div>)
-      }
+              ) : ( 
+                <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading || (userProfile?.credits || 0) < 1}>
+                  {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
+                </Button>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="grid grid-cols-12 mt-2">
+          {
+            ((stills?.length ?? 0) > 0 && !isEditable) && (
+              // adjust the grid layout here
+              <div className={cn("flex items-center col-span-12 md:col-span-12 lg:col-span-6",
+                isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
+              )}>
+                <span>Still:</span>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable || isStillGenerating || isVideoGenerating}><IconChevronLeft /></Button>
+                <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable || isStillGenerating || isVideoGenerating}><IconChevronRight /></Button>
+                {stills && stills[currentStillIndex] && (
+                  <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1}>
+                    <IconRefresh />
+                  </Button>
+                )}
+              </div>
+            )
+          }
+          {
+            ((videos?.length ?? 0) > 0 && !isEditable) ? (
+              // adjust the grid layout here
+              <div className={cn("flex items-center col-span-12 md:col-span-12 lg:col-span-6",
+                isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
+              )}>
+                <span>Video:</span>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('prev')} disabled={!isPrevVideoAvailable || isStillGenerating || isVideoGenerating}><IconChevronLeft /></Button>
+                <span className="mx-2">{currentVideoIndex + 1}/{videos?.length ?? 0}</span>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateVideos('next')} disabled={!isNextVideoAvailable || isStillGenerating || isVideoGenerating}><IconChevronRight /></Button>
+                {videos && videos[currentVideoIndex] && (
+                  <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateVideo} disabled={isVideoGenerating || isStillGenerating || (userProfile?.credits || 0) < 10}>
+                    <IconRefresh />
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <>
+                {
+                  (!isEditable && !isSillLoading) && (
+                    <div className="flex items-center col-span-6">
+                      <span>Video:</span>
+                      <Button
+                        className="ml-3 rounded-sm py-2 px-4"
+                        onClick={generateVideo}
+                        disabled={
+                          isVideoGenerating ||
+                          isStillGenerating ||
+                          !stills?.[currentStillIndex] ||
+                          (prompts?.[currentPromptIndex].prompt ?? "").trim() === "" ||
+                          isVideoLoading ||
+                          isEditable || 
+                          (userProfile?.credits || 0) < 10
+                        }
+                      >
+                        Animate
+                        <IconCoin className="ml-2" />
+                        20
+                      </Button>
+                    </div>
+                  )
+                }
+              </>
+            )
+          }
+        </div>
+      </div>
     </div>
   )
 }

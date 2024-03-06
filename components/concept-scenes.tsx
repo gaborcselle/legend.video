@@ -1,17 +1,14 @@
 "use client"
 
-import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 
 import { useProjects } from '@/lib/hooks/use-projects'
-import { Scene } from '@/lib/types';
-
-import { createClient } from '@/utils/supabase/client';
 import SceneView from './scene-view';
 
 export default function ConceptScenes() {
-  const supabase = createClient()
-  const { scenes, setScenes } = useProjects();
+  const { scenes } = useProjects();
+
+  console.log('scenes', scenes);
 
   return (
     <>

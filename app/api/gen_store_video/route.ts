@@ -34,9 +34,9 @@ export async function POST(req: NextRequest) {
 
     const json = await req.json()
 
-    const { scene_still_id, seq_num, image_url } = json;
+    const { shot_still_id, seq_num, image_url } = json;
 
-    if (!scene_still_id || (seq_num === undefined) || !image_url) {
+    if (!shot_still_id || (seq_num === undefined) || !image_url) {
         return new Response('Missing required parameters', { status: 400 });
     }
 
@@ -115,9 +115,9 @@ export async function POST(req: NextRequest) {
     }
 
     const video = await supabase
-        .from('scene_videos')
+        .from('shot_videos')
         .insert({
-            scene_still_id,
+            shot_still_id,
             video_url: mp4URL,
             owner_id: user.id,
             seq_num,

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import ShotView from '@/components/shot-view'
 
 import { useProjects } from '@/lib/hooks/use-projects'
-import { Scene } from '@/lib/types';
+import { Scene, Shot } from '@/lib/types';
 import { cn } from '@/lib/utils'
 
 import { createClient } from '@/utils/supabase/client';
@@ -15,9 +15,10 @@ interface IPropsSceneView {
 
 export default function SceneView(props: IPropsSceneView) {
   const supabase = createClient()
-  const { scenes, setScenes, setShots } = useProjects();
+  // const {shots, setShots } = useProjects();
+  const [shots, setShots] = useState<Shot[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [draggedItem, setDraggedItem] = useState<Scene | null>(null);
+  const [draggedItem, setDraggedItem] = useState<Shot | null>(null);
   const [isDraggable, setIsDraggable] = useState(false);
   const [shouldUpdateDB, setShouldUpdateDB] = useState(false);
   const { isSidebarOpen } = useSidebar();
@@ -44,21 +45,21 @@ export default function SceneView(props: IPropsSceneView) {
     fetchShots()
   }, [])
 
-  const handleDragStart = (scene: Scene) => {
-    setDraggedItem(scene);
+  const handleDragStart = (shot: Shot) => {
+    setDraggedItem(shot);
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>, index: number) => {
     event.preventDefault();
     if (draggedItem === null || draggedItem.seq_num === index) return;
-    let updatedScenes = [...scenes];
-    updatedScenes = updatedScenes.filter(scene => scene.id !== draggedItem.id);
-    updatedScenes.splice(index, 0, draggedItem);
-    updatedScenes = updatedScenes.map((scene, index) => {
-      scene.seq_num = index;
-      return scene;
+    let updatedShots = [...shots];
+    updatedShots = updatedShots.filter(shot => shot.id !== draggedItem.id);
+    updatedShots.splice(index, 0, draggedItem);
+    updatedShots = updatedShots.map((shot, index) => {
+      shot.seq_num = index;
+      return shot;
     });
-    setScenes(updatedScenes);
+    setShots(updatedShots);
     setShouldUpdateDB(true);
   };
 
@@ -67,15 +68,15 @@ export default function SceneView(props: IPropsSceneView) {
     setDraggedItem(null);
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>, index: number) => {
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     if (!shouldUpdateDB) return;
     try {
-      scenes.forEach(async (scene, index) => {
+      shots.forEach(async (shot, index) => {
         const { error } = await supabase
-          .from('scenes')
+          .from('shots')
           .update({ seq_num: index })
-          .eq('id', scene.id);
+          .eq('id', shot.id);
         if (error) throw new Error(error.message)
       });
     } catch (error) {
@@ -92,27 +93,27 @@ export default function SceneView(props: IPropsSceneView) {
 
   return (
     <>
-      {(scenes && scenes.length > 0) && (
+      {(shots && shots.length > 0) && (
         <div className="grid grid-cols-12 gap-6 mt-10">
           {
-            scenes.map((scene, index) => (
+            shots.map((shot, index) => (
               <Card
-                key={scene.id}
+                key={shot.id}
                 draggable={isDraggable}
-                onDragStart={() => handleDragStart(scene)}
+                onDragStart={() => handleDragStart(shot)}
                 onDragOver={(event) => handleDragOver(event, index)}
                 onDragEnd={handleDragEnd}
-                onDrop={(event) => handleDrop(event, index)}
+                onDrop={(event) => handleDrop(event)}
                 className={cn(
                   'flex bg-white dark:bg-neutral-950 col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4',
-                  draggedItem?.id === scene.id && 'border border-black rounded-sm opacity-30',
+                  draggedItem?.id === shot.id && 'border border-black rounded-sm opacity-30',
                   isSidebarOpen && 'md:col-span-12 lg:col-span-6 xl:col-span-4'
                 )}
               >
                 <CardContent className='w-full'>
                   <ShotView
                     listNumber={index + 1}
-                    scene={scene}
+                    shot={shot}
                     isDraggable={isDraggable}
                     setIsDraggable={setIsDraggable}
                   />
