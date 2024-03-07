@@ -61,8 +61,10 @@ export function SidebarItem({ project, children }: SidebarItemProps) {
         onClick={handleLinkClick}
       >
         <div
-          className="relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
-          title={project.title ?? ""}
+          className={cn(
+            buttonVariants({ variant: 'ghost' }),
+            'group w-full px-8 transition-colors cursor-not-allowed opacity-50 dark:hover:bg-neutral-950',
+          )}
         >
           <span className="whitespace-nowrap">
           <span>{project.title ?? 'Untitled'}</span>
