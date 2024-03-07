@@ -116,138 +116,6 @@ export type Database = {
           }
         ]
       }
-      scene_prompts: {
-        Row: {
-          created_at: string
-          id: number
-          owner_id: string | null
-          prompt: string | null
-          scene_id: number | null
-          selected_still: number | null
-          seq_num: number | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          owner_id?: string | null
-          prompt?: string | null
-          scene_id?: number | null
-          selected_still?: number | null
-          seq_num?: number | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          owner_id?: string | null
-          prompt?: string | null
-          scene_id?: number | null
-          selected_still?: number | null
-          seq_num?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_scene_prompts_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_scene_prompts_scene_id_fkey"
-            columns: ["scene_id"]
-            isOneToOne: false
-            referencedRelation: "scenes"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      scene_stills: {
-        Row: {
-          created_at: string
-          id: number
-          owner_id: string | null
-          scene_prompt_id: number | null
-          selected_video: number | null
-          seq_num: number | null
-          still_url: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          owner_id?: string | null
-          scene_prompt_id?: number | null
-          selected_video?: number | null
-          seq_num?: number | null
-          still_url?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          owner_id?: string | null
-          scene_prompt_id?: number | null
-          selected_video?: number | null
-          seq_num?: number | null
-          still_url?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_scene_stills_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_scene_stills_scene_prompt_id_fkey"
-            columns: ["scene_prompt_id"]
-            isOneToOne: false
-            referencedRelation: "scene_prompts"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      scene_videos: {
-        Row: {
-          created_at: string
-          id: number
-          owner_id: string | null
-          scene_still_id: number | null
-          seq_num: number | null
-          video_url: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          owner_id?: string | null
-          scene_still_id?: number | null
-          seq_num?: number | null
-          video_url?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          owner_id?: string | null
-          scene_still_id?: number | null
-          seq_num?: number | null
-          video_url?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_scene_videos_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_scene_videos_scene_still_id_fkey"
-            columns: ["scene_still_id"]
-            isOneToOne: false
-            referencedRelation: "scene_stills"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       scenes: {
         Row: {
           created_at: string
@@ -300,6 +168,7 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          is_new_still_generating: boolean | null
           owner_id: string | null
           prompt: string | null
           selected_still: number | null
@@ -309,6 +178,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: number
+          is_new_still_generating?: boolean | null
           owner_id?: string | null
           prompt?: string | null
           selected_still?: number | null
@@ -318,6 +188,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: number
+          is_new_still_generating?: boolean | null
           owner_id?: string | null
           prompt?: string | null
           selected_still?: number | null
@@ -345,6 +216,7 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          is_new_video_generating: boolean | null
           owner_id: string | null
           selected_video: number | null
           seq_num: number | null
@@ -354,6 +226,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: number
+          is_new_video_generating?: boolean | null
           owner_id?: string | null
           selected_video?: number | null
           seq_num?: number | null
@@ -363,6 +236,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: number
+          is_new_video_generating?: boolean | null
           owner_id?: string | null
           selected_video?: number | null
           seq_num?: number | null
