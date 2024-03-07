@@ -13,7 +13,7 @@ export default function ConceptView() {
       <CardHeader>
         <CardTitle>Project: {project.title}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="mx-3">
         <div>{project?.concept ?? ''}</div>
         {isGeneratingScenes && (
           <div className='mt-2 flex items-center gap-1'>

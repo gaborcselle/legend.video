@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-import { Project, Scene, UserProfile } from '@/lib/types';
+import { Project, Scene, Shot, UserProfile } from '@/lib/types';
 
 // Define the shape of the context
 interface ProjectsContextType {
@@ -8,6 +8,8 @@ interface ProjectsContextType {
   setProject: (project: Project) => void;
   scenes: Scene[];
   setScenes: (scenes: Scene[]) => void;
+  shots: Shot[];
+  setShots: (shots: Shot[]) => void;
   projects: Project[];
   setProjects: (projects: Project[]) => void;
   isGeneratingScenes: boolean;
@@ -45,6 +47,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
     title: ''
   });
   const [scenes, setScenes] = useState<Scene[]>([]);
+  const [shots, setShots] = useState<Shot[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isGeneratingScenes, setIsGeneratingScenes] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<UserProfile>();
@@ -66,7 +69,21 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
   return (
     <ProjectsContext.Provider
       value={
-        { project, setProject, scenes, setScenes, projects, setProjects, isGeneratingScenes, setIsGeneratingScenes, userProfile, setUserProfile, resetState }
+        {
+          project,
+          setProject,
+          scenes,
+          setScenes,
+          shots,
+          setShots,
+          projects,
+          setProjects,
+          isGeneratingScenes,
+          setIsGeneratingScenes,
+          userProfile,
+          setUserProfile,
+          resetState
+        }
       }
     >
       {children}

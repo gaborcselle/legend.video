@@ -10,6 +10,7 @@ import { IconArrowRight } from '@/components/ui/icons'
 
 import { Project } from '@/lib/types'
 import { useProjects } from '@/lib/hooks/use-projects'
+import { useRouter } from 'next/navigation'
 
 const exampleConcepts = [
   {
@@ -27,9 +28,18 @@ const exampleConcepts = [
 ]
 
 export default function ConceptSetup() {
-  const { project, projects, setProject, setProjects, setScenes, setIsGeneratingScenes, setUserProfile, userProfile } = useProjects()
+  const {
+    project,
+    projects,
+    setProject,
+    setProjects,
+    setIsGeneratingScenes,
+    setUserProfile,
+    userProfile,
+  } = useProjects()
+  const router = useRouter()
 
-  const [sceneCount, setSceneCount] = useState<number[]>([5])
+  const [sceneCount, setSceneCount] = useState<number[]>([3])
   const [errorMsg, setErrorMsg] = useState<string>('')
 
   const handleConceptChange = (key: string, value: string) => {
@@ -83,10 +93,8 @@ export default function ConceptSetup() {
           data.project,
           ...projects
         ])
-  
-        setScenes([
-          ...data.scenes
-        ])
+
+        router.push(`/video/${data.project.id}`)
       } catch (error) {
         setErrorMsg(error as string)
       }
@@ -136,8 +144,8 @@ export default function ConceptSetup() {
           <Button variant="outline" onClick={resetState}>
             Reset
           </Button>
-          <Button className="min-w-44" onClick={generateStories}>
-            Generate storyboard
+          <Button className="min-w-44" onClick={generateStories} disabled={project?.concept?.trim() === ""}>
+            Generate Storyboard
           </Button>
         </div>
         {errorMsg && <div className="mt-4 text-red-500">{errorMsg}</div>}

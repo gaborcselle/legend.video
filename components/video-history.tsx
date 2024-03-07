@@ -7,37 +7,31 @@ import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
 import { useProjects } from '@/lib/hooks/use-projects'
+import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 export function VideoHistory() {
-  const { resetState, isGeneratingScenes } = useProjects()
+  const { resetState } = useProjects()
+  const { toggleSidebar } = useSidebar()
+
+  const handleNewProject = () => {
+    if (window.innerWidth < 1024) toggleSidebar()
+    resetState()
+  }
 
   return (
     <div className="flex flex-col h-full">
       <div className="px-2 my-4">
-        {isGeneratingScenes ? (
-          <div
-            className={cn(
-              buttonVariants({ variant: 'outline' }),
-              'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors dark:bg-zinc-900 cursor-not-allowed opacity-50',
-            )}
-          >
-            <IconPlus className="-translate-x-2 stroke-2" />
-            New Project
-          </div>
-  
-        ) : (
-          <Link
-            href="/"
-            className={cn(
-              buttonVariants({ variant: 'outline' }),
-              'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
-            )}
-            onClick={resetState}
-          >
-            <IconPlus className="-translate-x-2 stroke-2" />
-            New Project
-          </Link>
-        )}
+        <Link
+          href="/"
+          className={cn(
+            buttonVariants({ variant: 'outline' }),
+            'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
+          )}
+          onClick={handleNewProject}
+        >
+          <IconPlus className="-translate-x-2 stroke-2" />
+          New Project
+        </Link>
       </div>
       <React.Suspense
         fallback={

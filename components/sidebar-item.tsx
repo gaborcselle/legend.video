@@ -76,75 +76,57 @@ export function SidebarItem({ index, project, children }: SidebarItemProps) {
           <IconMessage className="mr-2" />
         )}
       </div> */}
-      {isGeneratingScenes ? (
+      <Link
+        href={`/video/${project.id}`}
+        className={cn(
+          buttonVariants({ variant: 'ghost' }),
+          'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',
+          isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800'
+        )}
+        onClick={handleLinkClick}
+      >
         <div
-          className={cn(
-            buttonVariants({ variant: 'ghost' }),
-            'group w-full px-8 transition-colors cursor-not-allowed opacity-50 dark:hover:bg-neutral-950',
-          )}
+          className="relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
+          title={project.title ?? ""}
         >
-          <div
-            className="relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
-            title={project.title ?? ""}
-          >
-            <span className="whitespace-nowrap">
+          <span className="whitespace-nowrap">
+            {shouldAnimate && project?.title ? (
+              project.title!.split('').map((character, index) => (
+                <motion.span
+                  key={index}
+                  variants={{
+                    initial: {
+                      opacity: 0,
+                      x: -100
+                    },
+                    animate: {
+                      opacity: 1,
+                      x: 0
+                    }
+                  }}
+                  initial={shouldAnimate ? 'initial' : undefined}
+                  animate={shouldAnimate ? 'animate' : undefined}
+                  transition={{
+                    duration: 0.25,
+                    ease: 'easeIn',
+                    delay: index * 0.05,
+                    staggerChildren: 0.05
+                  }}
+                  // onAnimationComplete={() => {
+                  //   if (index === (project?.title?.length || 0) - 1) {
+                  //     setNewChatId(null)
+                  //   }
+                  // }}
+                >
+                  {character}
+                </motion.span>
+              ))
+            ) : (
               <span>{project.title ?? 'Untitled'}</span>
-            </span>
-          </div>
+            )}
+          </span>
         </div>
-      ) : (
-        <Link
-          href={`/video/${project.id}`}
-          className={cn(
-            buttonVariants({ variant: 'ghost' }),
-            'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',
-            isActive && 'bg-zinc-200 pr-16 font-semibold dark:bg-zinc-800'
-          )}
-          onClick={handleLinkClick}
-        >
-          <div
-            className="relative max-h-5 flex-1 select-none overflow-hidden text-ellipsis break-all"
-            title={project.title ?? ""}
-          >
-            <span className="whitespace-nowrap">
-              {shouldAnimate && project?.title ? (
-                project.title!.split('').map((character, index) => (
-                  <motion.span
-                    key={index}
-                    variants={{
-                      initial: {
-                        opacity: 0,
-                        x: -100
-                      },
-                      animate: {
-                        opacity: 1,
-                        x: 0
-                      }
-                    }}
-                    initial={shouldAnimate ? 'initial' : undefined}
-                    animate={shouldAnimate ? 'animate' : undefined}
-                    transition={{
-                      duration: 0.25,
-                      ease: 'easeIn',
-                      delay: index * 0.05,
-                      staggerChildren: 0.05
-                    }}
-                    // onAnimationComplete={() => {
-                    //   if (index === (project?.title?.length || 0) - 1) {
-                    //     setNewChatId(null)
-                    //   }
-                    // }}
-                  >
-                    {character}
-                  </motion.span>
-                ))
-              ) : (
-                <span>{project.title ?? 'Untitled'}</span>
-              )}
-            </span>
-          </div>
-        </Link>
-      )}
+      </Link>
       {(isActive && !isGeneratingScenes) && <div className="absolute right-2 top-1">{children}</div>}
     </motion.div>
   )

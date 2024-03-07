@@ -13,14 +13,17 @@ export type ProjectInput = Database['public']['Tables']['projects']['Insert']
 export type Scene = Database['public']['Tables']['scenes']['Row']
 export type SceneInput = Database['public']['Tables']['scenes']['Insert']
 
-export type ScenePrompt = Database['public']['Tables']['scene_prompts']['Row']
-export type ScenePromptInput = Database['public']['Tables']['scene_prompts']['Insert']
+export type Shot = Database['public']['Tables']['shots']['Row']
+export type ShotInput = Database['public']['Tables']['shots']['Insert']
 
-export type SceneStill = Database['public']['Tables']['scene_stills']['Row']
-export type SceneStillInput = Database['public']['Tables']['scene_stills']['Insert']
+export type ShotPrompt = Database['public']['Tables']['shot_prompts']['Row']
+export type ShotPromptInput = Database['public']['Tables']['shot_prompts']['Insert']
 
-export type SceneVideo = Database['public']['Tables']['scene_videos']['Row']
-export type SceneVideoInput = Database['public']['Tables']['scene_videos']['Insert']
+export type ShotStill = Database['public']['Tables']['shot_stills']['Row']
+export type ShotStillInput = Database['public']['Tables']['shot_stills']['Insert']
+
+export type ShotVideo = Database['public']['Tables']['shot_videos']['Row']
+export type ShotVideoInput = Database['public']['Tables']['shot_videos']['Insert']
 
 export type UserProfile = Database['public']['Tables']['user_profiles']['Row']
 export type UserProfileInput = Database['public']['Tables']['user_profiles']['Insert']

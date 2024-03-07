@@ -17,20 +17,22 @@ export function SidebarItems() {
       {projects.map(
         (project, index) =>
           project && (
-            <motion.div
-              key={project?.id}
-              exit={{
-                opacity: 0,
-                height: 0
-              }}
-            >
-              <SidebarItem index={index} project={project}>
-                 <SidebarActions
-                  project={project}
-                />
-                <div></div>
-              </SidebarItem>
-            </motion.div>
+            <div key={index}>
+              <motion.div
+                key={project?.id}
+                exit={{
+                  opacity: 0,
+                  height: 0
+                }}
+              >
+                <SidebarItem index={index} project={project}>
+                  <SidebarActions
+                    project={project}
+                  />
+                  <div></div>
+                </SidebarItem>
+              </motion.div>
+            </div>
           )
       )}
     </AnimatePresence>
