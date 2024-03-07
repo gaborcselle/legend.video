@@ -442,12 +442,13 @@ export default function ShotView(props: IShotProps) {
     <div className="flex flex-col flex-1">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
-          <AccordionTrigger className="font-bold">
+          {/* Note from Gabor: I added a p-0 here so that the accordions wouldn't take up so much space. */}
+          <AccordionTrigger className="font-bold p-0">
             <div className="flex items-center">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <StretchHorizontalIcon
-                    className="border border-gray-300 rounded-sm p-1 my-4 mr-3 cursor-pointer hidden lg:block"
+                    className="border border-gray-300 rounded-sm p-1 my-4 mr-3 cursor-pointer hidden md:block"
                     onMouseDown={() => props.setIsDraggable(true)}
                     onMouseUp={() => props.setIsDraggable(false)}
                   />

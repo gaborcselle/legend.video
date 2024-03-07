@@ -302,7 +302,6 @@ export async function POST(req: NextRequest) {
                 }
             }
 
-            console.log()
 
             const shotsObj = await supabase.from('shots').insert(shotsPayload).select();
 

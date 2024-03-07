@@ -29,7 +29,7 @@ const exampleConcepts = [
 export default function ConceptSetup() {
   const { project, projects, setProject, setProjects, setScenes, setIsGeneratingScenes, setUserProfile, userProfile } = useProjects()
 
-  const [sceneCount, setSceneCount] = useState<number[]>([5])
+  const [sceneCount, setSceneCount] = useState<number[]>([3])
   const [errorMsg, setErrorMsg] = useState<string>('')
 
   const handleConceptChange = (key: string, value: string) => {
@@ -137,7 +137,7 @@ export default function ConceptSetup() {
             Reset
           </Button>
           <Button className="min-w-44" onClick={generateStories}>
-            Generate storyboard
+            Generate Storyboard
           </Button>
         </div>
         {errorMsg && <div className="mt-4 text-red-500">{errorMsg}</div>}
