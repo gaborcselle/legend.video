@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card"
 import ShotView from '@/components/shot-view'
 
-import { useProjects } from '@/lib/hooks/use-projects'
 import { toast } from 'react-hot-toast'
 import { Scene, Shot } from '@/lib/types';
 import { cn } from '@/lib/utils'
 
 import { createClient } from '@/utils/supabase/client';
 import { useSidebar } from '@/lib/hooks/use-sidebar';
+import { useExecTimeCounter } from '@/lib/hooks/use-exec-time-counter';
 
 interface IPropsSceneView {
   scene: Scene
@@ -23,6 +23,8 @@ export default function SceneView(props: IPropsSceneView) {
   const [shouldUpdateDB, setShouldUpdateDB] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { isSidebarOpen } = useSidebar();
+
+  const { execTime, pending, setPending } = useExecTimeCounter()
 
   useEffect(() => {
     const fetchShots = async () => {
