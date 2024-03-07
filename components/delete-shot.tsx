@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { IconSpinner, IconTrash } from '@/components/ui/icons'
+import { Trash2Icon } from 'lucide-react'
 
 interface DeleteShotProps {
   shotID: number,
@@ -31,10 +32,8 @@ export function DeleteShot({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" disabled={deleteLoading} className='hover:bg-zinc-200 dark:hover:bg-zinc-300/10'>
-          {deleteLoading ? <IconSpinner className="mr-2" /> : <IconTrash />}
-        </Button>
+      <AlertDialogTrigger asChild disabled={deleteLoading}>
+        <Trash2Icon className="w-4 h-4" />
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

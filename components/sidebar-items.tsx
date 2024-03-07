@@ -25,7 +25,7 @@ export function SidebarItems() {
                   height: 0
                 }}
               >
-                <SidebarItem project={project}>
+                <SidebarItem index={index} project={project}>
                   <SidebarActions
                     project={project}
                   />
