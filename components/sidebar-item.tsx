@@ -29,13 +29,14 @@ interface SidebarItemProps {
 export function SidebarItem({ index, project, children }: SidebarItemProps) {
   const pathname = usePathname()
   const { toggleSidebar } = useSidebar()
-  const { isGeneratingScenes } = useProjects()
+  const { isGeneratingScenes, resetState } = useProjects()
 
   const isActive = pathname === `/video/${project.id}`
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
   const shouldAnimate = index === 0 && isActive && newChatId
 
   const handleLinkClick = () => {
+    resetState()
     if (window.innerWidth < 1024) toggleSidebar()
   }
 
