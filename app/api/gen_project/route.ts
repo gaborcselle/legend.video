@@ -247,7 +247,7 @@ export async function POST(req: NextRequest) {
 
         console.log('scenesDict', scenesDict);
 
-        let scenesPayload = [];
+        let scenesPayload : Object[] = [];
         for (let i = 0; i < numScenes; i++) {
             scenesPayload.push({
                 owner_id: user.id,
@@ -281,8 +281,8 @@ export async function POST(req: NextRequest) {
 
             console.log('shotsDict', shotsDict);
 
-            let shotsPayload = [];
-            let shotPromptsPayload = [];
+            let shotsPayload : Object[] = [];
+            let shotPromptsPayload : Object[] = [];
             for (let j = 0; j < Object.keys(shotsDict).length; j++) {
                 const shotKey = `shot_${j + 1}_title`;
                 if (!shotsDict[shotKey]) {
