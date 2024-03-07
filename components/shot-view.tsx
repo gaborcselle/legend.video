@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Shot, ShotPrompt, ShotStill, ShotVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconZoom } from '@/components/ui/icons'
+import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh } from '@/components/ui/icons'
 import {
   Accordion,
   AccordionContent,
@@ -21,17 +21,19 @@ import { useProjects } from "@/lib/hooks/use-projects";
 import { useSidebar } from "@/lib/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
 import { StretchHorizontalIcon } from "lucide-react";
+import { DeleteShot } from "./delete-shot";
 
 interface IShotProps {
   listNumber: number;
   shot: Shot;
   isDraggable: boolean;
   setIsDraggable: (value: boolean) => void;
+  deleteShot: (shotID: number) => void;
+  deleteLoading: boolean;
 }
 
 export default function ShotView(props: IShotProps) {
   const supabase = createClient();
-  // const [shot, setShot] = useState<Shot[]>([]);
   const [prompts, setPrompts] = useState<ShotPrompt[]>([]);
   const [stills, setStills] = useState<ShotStill[]>([]);
   const [videos, setVideos] = useState<ShotVideo[]>([]);
@@ -52,17 +54,6 @@ export default function ShotView(props: IShotProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const shot = await supabase
-        //   .from('shots')
-        //   .select('*')
-        //   .eq('id', props.shot.id);
-
-        // if (shot.error) {
-        //   throw new Error('Failed to fetch shot');
-        // }
-
-        // setShot(shot.data);
-
         const shotPrompts = await supabase
           .from('shot_prompts')
           .select('*')
@@ -427,6 +418,10 @@ export default function ShotView(props: IShotProps) {
     }
   }
 
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  }
+
   const isPrevPromptAvailable = currentPromptIndex > 0;
   const isNextPromptAvailable = currentPromptIndex < (prompts?.length ?? 0) - 1;
   const isPrevStillAvailable = currentStillIndex > 0;
@@ -434,17 +429,13 @@ export default function ShotView(props: IShotProps) {
   const isPrevVideoAvailable = currentVideoIndex > 0;
   const isNextVideoAvailable = currentVideoIndex < (videos?.length ?? 0) - 1;
 
-  // return (
-  //   <div>shot view</div>
-  // )
-
   return (
     <div className="flex flex-col flex-1">
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
           {/* Note from Gabor: I added a p-0 here so that the accordions wouldn't take up so much space. */}
           <AccordionTrigger className="font-bold p-0">
-            <div className="flex items-center">
+            <div className="flex items-center flex-1">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <StretchHorizontalIcon
@@ -456,7 +447,12 @@ export default function ShotView(props: IShotProps) {
                 <TooltipContent>Click and drag to reorder</TooltipContent>
               </Tooltip>
               {/* TODO(gabor): remove the prompt slice as appropriate */}
-              {props.shot?.title ?? "Untitled"}              
+              {props.shot?.title ?? "Untitled"}
+              <div className="flex-1 flex justify-end pr-3">
+                <div onClick={(e) => handleDeleteClick(e)}>
+                  <DeleteShot shotID={props.shot.id} deleteShot={props.deleteShot} deleteLoading={props.deleteLoading} />
+                </div>
+              </div>
             </div>
           </AccordionTrigger>
           <AccordionContent>

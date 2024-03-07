@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import ShotView from '@/components/shot-view'
 
 import { useProjects } from '@/lib/hooks/use-projects'
+import { toast } from 'react-hot-toast'
 import { Scene, Shot } from '@/lib/types';
 import { cn } from '@/lib/utils'
 
@@ -15,12 +16,12 @@ interface IPropsSceneView {
 
 export default function SceneView(props: IPropsSceneView) {
   const supabase = createClient()
-  // const {shots, setShots } = useProjects();
   const [shots, setShots] = useState<Shot[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [draggedItem, setDraggedItem] = useState<Shot | null>(null);
   const [isDraggable, setIsDraggable] = useState(false);
   const [shouldUpdateDB, setShouldUpdateDB] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { isSidebarOpen } = useSidebar();
 
   useEffect(() => {
@@ -44,6 +45,22 @@ export default function SceneView(props: IPropsSceneView) {
     }
     fetchShots()
   }, [])
+
+  const deleteShot = async (shotID: number) => {
+    setDeleteLoading(true)
+    try {
+      const deletedShot = await supabase.from('shots').delete().eq('id', shotID);
+      if (deletedShot.error) {
+        throw new Error(deletedShot.error.message)
+      }
+      setShots(shots.filter(shot => shot.id !== shotID))
+      toast.success('Shot deleted successfully')
+    } catch (error) {
+      console.log(error)
+      toast.error('Failed to delete shot')
+    }
+    setDeleteLoading(false)
+  }
 
   const handleDragStart = (shot: Shot) => {
     setDraggedItem(shot);
@@ -116,6 +133,8 @@ export default function SceneView(props: IPropsSceneView) {
                     shot={shot}
                     isDraggable={isDraggable}
                     setIsDraggable={setIsDraggable}
+                    deleteShot={deleteShot}
+                    deleteLoading={deleteLoading}
                   />
                 </CardContent>
               </Card>

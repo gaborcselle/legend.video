@@ -18,7 +18,6 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { IconSpinner } from '@/components/ui/icons'
-import { useProjects } from '@/lib/hooks/use-projects'
 
 interface ClearHistoryProps {
   isEnabled: boolean
@@ -31,13 +30,12 @@ export function ClearHistory({
 }: ClearHistoryProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
-  const { isGeneratingScenes } = useProjects()
   const router = useRouter()
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" disabled={!isEnabled || isPending || isGeneratingScenes} className='hover:bg-zinc-200 dark:hover:bg-zinc-300/10'>
+        <Button variant="ghost" disabled={!isEnabled || isPending} className='hover:bg-zinc-200 dark:hover:bg-zinc-300/10'>
           {isPending && <IconSpinner className="mr-2" />}
           Clear history
         </Button>

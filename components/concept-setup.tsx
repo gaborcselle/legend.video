@@ -27,7 +27,18 @@ const exampleConcepts = [
 ]
 
 export default function ConceptSetup() {
-  const { project, projects, setProject, setProjects, setScenes, setIsGeneratingScenes, setUserProfile, userProfile } = useProjects()
+  const {
+    project,
+    projects,
+    setProject,
+    setProjects,
+    setScenes,
+    setIsGeneratingScenes,
+    setUserProfile,
+    userProfile,
+    updateProjectState,
+    setUpdateProjectState
+  } = useProjects()
 
   const [sceneCount, setSceneCount] = useState<number[]>([3])
   const [errorMsg, setErrorMsg] = useState<string>('')
@@ -83,10 +94,14 @@ export default function ConceptSetup() {
           data.project,
           ...projects
         ])
-  
-        setScenes([
-          ...data.scenes
-        ])
+
+        if (updateProjectState)  {
+          setScenes([
+            ...data.scenes
+          ])
+        } else {
+          setUpdateProjectState(true)
+        }
       } catch (error) {
         setErrorMsg(error as string)
       }
@@ -136,7 +151,7 @@ export default function ConceptSetup() {
           <Button variant="outline" onClick={resetState}>
             Reset
           </Button>
-          <Button className="min-w-44" onClick={generateStories}>
+          <Button className="min-w-44" onClick={generateStories} disabled={project?.concept?.trim() === ""}>
             Generate Storyboard
           </Button>
         </div>

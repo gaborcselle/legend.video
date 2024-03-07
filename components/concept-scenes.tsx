@@ -8,8 +8,6 @@ import SceneView from './scene-view';
 export default function ConceptScenes() {
   const { scenes } = useProjects();
 
-  console.log('scenes', scenes);
-
   return (
     <>
      {(scenes && scenes.length > 0) && (
@@ -24,7 +22,6 @@ export default function ConceptScenes() {
               </CardContent>
             </Card>
           ))
-        
         }
       </>
      )}
