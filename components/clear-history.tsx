@@ -31,7 +31,7 @@ export function ClearHistory({
 }: ClearHistoryProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
-  const { isGeneratingScenes } = useProjects()
+  const { resetState } = useProjects()
   const router = useRouter()
 
   return (
@@ -58,6 +58,7 @@ export function ClearHistory({
               event.preventDefault()
               startTransition(async () => {
                 await clearProjects()
+                resetState()
                 toast.success('All projects deleted')
                 setOpen(false)
                 router.push('/')

@@ -19,10 +19,9 @@ export const useExecTimeCounter = () => {
             return
         }
 
-        // count every 0.1 seconds
         const id = setInterval(() => {
-            setExecTime(prev => Math.round((prev + 0.1) * 10) / 10)
-        }, 100)
+            setExecTime(prev => Math.floor(prev + 1));
+        }, 1000);
 
         setIntervalId(id)
         setPending(true)
