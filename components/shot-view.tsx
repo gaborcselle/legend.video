@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Shot, ShotPrompt, ShotStill, ShotVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh } from '@/components/ui/icons'
+import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconSpinner } from '@/components/ui/icons'
 import {
   Accordion,
   AccordionContent,
@@ -22,6 +22,7 @@ import { useSidebar } from "@/lib/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
 import { StretchHorizontalIcon } from "lucide-react";
 import { DeleteShot } from "./delete-shot";
+import { useExecTimeCounter } from "@/lib/hooks/use-exec-time-counter";
 
 interface IShotProps {
   listNumber: number;
@@ -50,6 +51,7 @@ export default function ShotView(props: IShotProps) {
 
   const { userProfile, setUserProfile } = useProjects();
   const { isSidebarOpen } = useSidebar();
+  const { execTime, pending, setPending } = useExecTimeCounter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -240,6 +242,7 @@ export default function ShotView(props: IShotProps) {
 
   const generateStill = async (prompt?: ShotPrompt) => {
     setIsStillGenerating(true);
+    setPending(true);
     let newPrompt: ShotPrompt | undefined;
     try {
       // check if we have to create a new prompt
@@ -326,6 +329,7 @@ export default function ShotView(props: IShotProps) {
       console.log(error);
     }
     setIsStillGenerating(false);
+    setPending(false);
   }
 
   const reGenerateStill = async () => {
@@ -349,6 +353,7 @@ export default function ShotView(props: IShotProps) {
   const generateVideo = async () => {
     if ((userProfile?.credits || 0) < 20) return
     setIsVideoGenerating(true);
+    setPending(true);
     try {
       if (!userProfile) {
         throw new Error('User profile not found');
@@ -388,6 +393,7 @@ export default function ShotView(props: IShotProps) {
       console.log(error);
     }
     setIsVideoGenerating(false);
+    setPending(false);
   };
 
   const reGenerateVideo = async () => {
@@ -518,7 +524,12 @@ export default function ShotView(props: IShotProps) {
                 </>
               ) : ( 
                 <Button className="min-w-24" onClick={() => generateStill()} disabled={isStillGenerating || (prompts?.[currentPromptIndex]?.prompt || "").trim() === "" || isSillLoading || (userProfile?.credits || 0) < 1}>
-                  {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
+                  {isStillGenerating ? (
+                    <>
+                      <IconSpinner className="mr-1" />
+                      { `${execTime}s` }
+                    </>
+                  ) : isSillLoading ? "Loading..." : "Generate Still"}
                 </Button>
               )}
             </>
@@ -567,7 +578,7 @@ export default function ShotView(props: IShotProps) {
                     <div className="flex items-center col-span-6">
                       <span>Video:</span>
                       <Button
-                        className="ml-3 rounded-sm py-2 px-4"
+                        className="ml-3 rounded-sm py-2 px-4 min-w-[129px]"
                         onClick={generateVideo}
                         disabled={
                           isVideoGenerating ||
@@ -579,9 +590,18 @@ export default function ShotView(props: IShotProps) {
                           (userProfile?.credits || 0) < 10
                         }
                       >
-                        Animate
-                        <IconCoin className="ml-2" />
-                        20
+                        {isVideoGenerating ? (
+                          <>
+                            <IconSpinner className="mr-1" />
+                            { `${execTime}s` }
+                          </>
+                        ) : (
+                          <>
+                            Animate
+                            <IconCoin className="ml-2" />
+                            20
+                          </>
+                        )}
                       </Button>
                     </div>
                   )
