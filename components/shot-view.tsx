@@ -51,7 +51,7 @@ export default function ShotView(props: IShotProps) {
 
   const { userProfile, setUserProfile } = useProjects();
   const { isSidebarOpen } = useSidebar();
-  const { execTime, pending, setPending } = useExecTimeCounter();
+  const { execTime, setPending } = useExecTimeCounter();
 
   useEffect(() => {
     const fetchData = async () => {
