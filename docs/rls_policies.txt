@@ -44,10 +44,10 @@ create policy "Scene select" on public.scenes
 create policy "Scene delete" on public.scenes
   for delete using ( auth.uid() = owner_id );
 
-create policy "Shot update" on public.shot
+create policy "Shot update" on public.shots
   for update using ( auth.uid() = owner_id );
 
-create policy "Shot select" on public.shot
+create policy "Shot select" on public.shots
   for select using ( auth.uid() = owner_id );
 
 create policy "Shot delete" on public.shots
@@ -62,13 +62,13 @@ create policy "Prompt select" on public.shot_prompts
 create policy "Prompt delete" on public.shot_prompts
   for delete using ( auth.uid() = owner_id );
 
-create policy "Still update" on public.scene_stills
+create policy "Still update" on public.shot_stills
   for update using ( auth.uid() = owner_id );
 
-create policy "Still select" on public.scene_stills
+create policy "Still select" on public.shot_stills
   for select using ( auth.uid() = owner_id );
 
-create policy "Still delete" on public.scene_stills
+create policy "Still delete" on public.shot_stills
   for delete using ( auth.uid() = owner_id );
 
 create policy "Video update" on public.shot_videos
