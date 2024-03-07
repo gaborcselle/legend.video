@@ -1,8 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import { type Session } from 'next-auth'
-// import { signOut } from 'next-auth/react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -66,6 +64,11 @@ export function UserMenu({ user }: any) {
             <Link href="/credits" className="text-xs">            
               Buy Credits
               <IconCoin className="size-3 ml-auto" />
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem >
+            <Link href="/faq" className="text-xs">
+              FAQ
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
