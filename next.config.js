@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
+
+    webpack: (config, { dev }) => {
+      // Enable source maps in development mode
+      if (dev) {
+        config.devtool = "source-map";
+      }
+  
+      return config;
+    },
   reactStrictMode: false,
   images: {
     remotePatterns: [

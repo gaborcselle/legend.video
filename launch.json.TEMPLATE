@@ -1,0 +1,19 @@
+// use this as your launch.json for VS Code so you can do interactive debugging
+// this comment should not be part of your file
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Next.js: Node",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "dev"],
+      "restart": true,
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      }
+    }
+  ]
+}
