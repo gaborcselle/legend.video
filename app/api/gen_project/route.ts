@@ -302,6 +302,8 @@ export async function POST(req: NextRequest) {
                 }
             }
 
+            console.log()
+
             const shotsObj = await supabase.from('shots').insert(shotsPayload).select();
 
             if (shotsObj.error) {
@@ -333,11 +335,10 @@ export async function POST(req: NextRequest) {
             console.log('shotsPayload', shotsPayload);
             console.log('shotPromptsPayload', shotPromptsPayload);
 
-            const shots = await supabase.from('shots').insert(shotsPayload).select();
             const shotPrompts = await supabase.from('shot_prompts').insert(shotPromptsPayload).select();
 
-            if (shots.error || shotPrompts.error) {
-                console.log('Error inserting shots or shot prompts', shots.error, shotPrompts.error);
+            if (shotsObj.error || shotPrompts.error) {
+                console.log('Error inserting shots or shot prompts', shotsObj.error, shotPrompts.error);
                 return new Response('Error inserting shots or shot prompts', { status: 500 });
             }
         }
