@@ -10,6 +10,7 @@ import { IconArrowRight } from '@/components/ui/icons'
 
 import { Project } from '@/lib/types'
 import { useProjects } from '@/lib/hooks/use-projects'
+import { useRouter } from 'next/navigation'
 
 const exampleConcepts = [
   {
@@ -32,13 +33,11 @@ export default function ConceptSetup() {
     projects,
     setProject,
     setProjects,
-    setScenes,
     setIsGeneratingScenes,
     setUserProfile,
     userProfile,
-    updateProjectState,
-    setUpdateProjectState
   } = useProjects()
+  const router = useRouter()
 
   const [sceneCount, setSceneCount] = useState<number[]>([3])
   const [errorMsg, setErrorMsg] = useState<string>('')
@@ -95,13 +94,7 @@ export default function ConceptSetup() {
           ...projects
         ])
 
-        if (updateProjectState)  {
-          setScenes([
-            ...data.scenes
-          ])
-        } else {
-          setUpdateProjectState(true)
-        }
+        router.push(`/video/${data.project.id}`)
       } catch (error) {
         setErrorMsg(error as string)
       }

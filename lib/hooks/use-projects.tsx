@@ -14,8 +14,6 @@ interface ProjectsContextType {
   setProjects: (projects: Project[]) => void;
   isGeneratingScenes: boolean;
   setIsGeneratingScenes: (isGenerating: boolean) => void;
-  updateProjectState: boolean;
-  setUpdateProjectState: (update: boolean) => void;
   userProfile: UserProfile | undefined;
   setUserProfile: (user: UserProfile) => void;
   resetState: () => void;
@@ -52,7 +50,6 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
   const [shots, setShots] = useState<Shot[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isGeneratingScenes, setIsGeneratingScenes] = useState<boolean>(false);
-  const [updateProjectState, setUpdateProjectState] = useState<boolean>(true);
   const [userProfile, setUserProfile] = useState<UserProfile>();
 
   const resetState = () => {
@@ -83,8 +80,6 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
           setProjects,
           isGeneratingScenes,
           setIsGeneratingScenes,
-          updateProjectState,
-          setUpdateProjectState,
           userProfile,
           setUserProfile,
           resetState
