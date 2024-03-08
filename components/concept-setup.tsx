@@ -11,6 +11,7 @@ import { IconArrowRight } from '@/components/ui/icons'
 import { Project } from '@/lib/types'
 import { useProjects } from '@/lib/hooks/use-projects'
 import { useRouter } from 'next/navigation'
+import { useExecTimeCounter } from '@/lib/hooks/use-exec-time-counter'
 
 const exampleConcepts = [
   {
@@ -33,14 +34,15 @@ export default function ConceptSetup() {
     projects,
     setProject,
     setProjects,
-    setIsGeneratingScenes,
+    setIsGeneratingProjects,
     setUserProfile,
     userProfile,
-    setIsCreditAlertOpen
+    setIsCreditAlertOpen,
+    sceneCount,
+    setSceneCount
   } = useProjects()
   const router = useRouter()
 
-  const [sceneCount, setSceneCount] = useState<number[]>([3])
   const [errorMsg, setErrorMsg] = useState<string>('')
 
   const handleConceptChange = (key: string, value: string) => {
@@ -48,7 +50,7 @@ export default function ConceptSetup() {
   }
 
   const resetState = () => {
-    setSceneCount([5])
+    setSceneCount([3])
     setProject({
       aspect_ratio: '16:9',
       concept: '',
@@ -69,9 +71,9 @@ export default function ConceptSetup() {
         setIsCreditAlertOpen(true)
         return
       }
-      setIsGeneratingScenes(true)
+      setIsGeneratingProjects(true)
       try {
-        const res = await fetch('/api/gen_project', {
+        const res = await fetch('/api/gen_project_1_name', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -103,7 +105,7 @@ export default function ConceptSetup() {
       } catch (error) {
         setErrorMsg(error as string)
       }
-      setIsGeneratingScenes(false)
+      // setIsGeneratingProjects(false)
     }
   }
 
@@ -141,7 +143,7 @@ export default function ConceptSetup() {
         <div className="flex flex-col lg:flex-row gap-4 mt-10">
           <div className="leading-normal min-w-44 text-muted-foreground text-nowrap">Scenes: {sceneCount}</div>
           <div className='flex gap-4 flex-1'>
-            <Slider min={1} max={10} step={1} value={sceneCount} onValueChange={(val: SetStateAction<number[]>) => setSceneCount(val)} />
+            <Slider min={1} max={10} step={1} value={sceneCount} onValueChange={(val) => setSceneCount(val)} />
             <div className="leading-normal text-muted-foreground">10</div>
           </div>
         </div>

@@ -5,12 +5,12 @@ import ConceptView from '@/components/concept-view'
 import ConceptSetup from '@/components/concept-setup'
 
 export default function ConceptHeader() {
-  const { scenes, isGeneratingScenes } = useProjects()
+  const { scenes, isGeneratingProjects, isGeneratingScenes } = useProjects()
 
   return (
     <>
       {
-        scenes.length > 0 || isGeneratingScenes ? 
+        scenes.length > 0 || isGeneratingScenes || isGeneratingProjects ? 
         <ConceptView /> :
         <ConceptSetup />
       }

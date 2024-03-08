@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import ShotView from '@/components/shot-view'
 
 import { toast } from 'react-hot-toast'
@@ -8,6 +8,9 @@ import { cn } from '@/lib/utils'
 
 import { createClient } from '@/utils/supabase/client';
 import { useSidebar } from '@/lib/hooks/use-sidebar';
+import { Skeleton } from './ui/skeleton';
+import { IconSpinner } from './ui/icons';
+import { useExecTimeCounter } from '@/lib/hooks/use-exec-time-counter';
 
 interface IPropsSceneView {
   scene: Scene
@@ -17,11 +20,13 @@ export default function SceneView(props: IPropsSceneView) {
   const supabase = createClient()
   const [shots, setShots] = useState<Shot[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isGenatingShots, setIsGeneratingShots] = useState(false)
   const [draggedItem, setDraggedItem] = useState<Shot | null>(null);
   const [isDraggable, setIsDraggable] = useState(false);
   const [shouldUpdateDB, setShouldUpdateDB] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { isSidebarOpen } = useSidebar();
+  const { execTime, setPending } = useExecTimeCounter()
 
   useEffect(() => {
     const fetchShots = async () => {
@@ -34,13 +39,36 @@ export default function SceneView(props: IPropsSceneView) {
         if (shots.error) {
           throw new Error(shots.error.message)
         }
-        if (shots.data) {
+        if (shots.data.length > 0) {
           setShots(shots.data)
+          setIsLoading(false)
+        } else {
+          setIsGeneratingShots(true)
+          setPending(true)
+          const res = await fetch('/api/gen_project_3_shots', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              scene_id: props.scene.id,
+            }),
+          })
+          if (!res.ok) {
+            throw new Error('Failed to generate shots');
+          }
+          const data = await res.json()
+          setShots(data.shots)
+          setIsLoading(false)
+          setPending(false)
+          setIsGeneratingShots(false)
         }
       } catch (error) {
         console.log(error)
+        setIsLoading(false)
+        setPending(false)
+        setIsGeneratingShots(false)
       }
-      setIsLoading(false)
     }
     fetchShots()
   }, [])
@@ -101,9 +129,18 @@ export default function SceneView(props: IPropsSceneView) {
     setShouldUpdateDB(false);
   };
 
+  if (isGenatingShots) {
+    return (
+      <div className='mt-2 flex items-center gap-1'>
+        <IconSpinner />
+        <span>Generating shots... { `${execTime}s` }</span>
+      </div>
+    )
+  }
+
   if (isLoading) {
     return  (
-      <div>Loading...</div>
+      <Skeleton className="h-[553px] w-[98%] rounded-x mt-10" />
     )
   }
 

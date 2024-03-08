@@ -4,9 +4,34 @@ import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/c
 
 import { useProjects } from '@/lib/hooks/use-projects'
 import SceneView from './scene-view';
+import { useEffect } from "react";
+import { useExecTimeCounter } from "@/lib/hooks/use-exec-time-counter";
+import { IconSpinner } from "./ui/icons";
 
 export default function ConceptScenes() {
-  const { scenes } = useProjects();
+  const { scenes, isGeneratingScenes } = useProjects()
+  const { execTime, setPending } = useExecTimeCounter()
+
+  useEffect(() => {
+    if (isGeneratingScenes) {
+      setPending(true)
+    } else {
+      setPending(false)
+    }
+  }, [isGeneratingScenes])
+
+  if (isGeneratingScenes) {
+    return (
+      <Card className='mt-10 p-4'>
+        <CardContent>
+          <div className='mt-2 flex items-center gap-1'>
+            <IconSpinner />
+            <span>Generating scenes... { `${execTime}s` }</span>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <>

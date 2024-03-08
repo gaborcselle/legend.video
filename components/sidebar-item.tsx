@@ -29,15 +29,15 @@ interface SidebarItemProps {
 export function SidebarItem({ index, project, children }: SidebarItemProps) {
   const pathname = usePathname()
   const { toggleSidebar } = useSidebar()
-  const { isGeneratingScenes, resetState } = useProjects()
+  const { isGeneratingProjects, resetState } = useProjects()
 
   const isActive = pathname === `/video/${project.id}`
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
   const shouldAnimate = index === 0 && isActive && newChatId
 
   const handleLinkClick = () => {
-    resetState()
-    if (window.innerWidth < 1024) toggleSidebar()
+    if (pathname !== `/video/${project.id}`) resetState()
+    if (window.innerWidth < 768) toggleSidebar()
   }
 
   if (!project?.id) return null
@@ -128,7 +128,7 @@ export function SidebarItem({ index, project, children }: SidebarItemProps) {
           </span>
         </div>
       </Link>
-      {(isActive && !isGeneratingScenes) && <div className="absolute right-2 top-1">{children}</div>}
+      {(isActive && !isGeneratingProjects) && <div className="absolute right-2 top-1">{children}</div>}
     </motion.div>
   )
 }

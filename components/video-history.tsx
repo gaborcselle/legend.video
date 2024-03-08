@@ -6,16 +6,13 @@ import { cn } from '@/lib/utils'
 import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
-import { useProjects } from '@/lib/hooks/use-projects'
 import { useSidebar } from '@/lib/hooks/use-sidebar'
 
 export function VideoHistory() {
-  const { resetState } = useProjects()
   const { toggleSidebar } = useSidebar()
 
   const handleNewProject = () => {
-    if (window.innerWidth < 1024) toggleSidebar()
-    resetState()
+    if (window.innerWidth < 768) toggleSidebar()
   }
 
   return (

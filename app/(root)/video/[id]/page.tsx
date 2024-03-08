@@ -11,12 +11,12 @@ export default function VideoPage({ params }: { params: { id: string } }) {
 
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string>()
-  const { setProject, setScenes, setShots } = useProjects()
+  const { setProject, setScenes, setIsGeneratingProjects, setIsGeneratingScenes, sceneCount } = useProjects()
   
   useEffect(() => {
+    setIsGeneratingProjects(false)
     const getProject = async () => {
       try {
-        // promise all later here
         const project = await supabase.from('projects').select('*').eq('id', params.id)
         if (project.error) {
           throw new Error(project.error.message)
@@ -28,12 +28,31 @@ export default function VideoPage({ params }: { params: { id: string } }) {
         if (scenes.error) {
           throw new Error(scenes.error.message)
         }
-        if (scenes.data) {
+        setIsLoading(false)
+        if (scenes.data.length > 0) {
           setScenes(scenes.data)
+        } else {
+          setIsGeneratingScenes(true)
+          const res = await fetch('/api/gen_project_2_scenes', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              project_id: project.data[0].id,
+              num_scenes: sceneCount[0]
+            }),
+          })
+          if (!res.ok) {
+            throw new Error('Failed to generate scenes');
+          }
+          const data = await res.json()
+          setScenes(data.scenes)
         }
       } catch (error) {
         setError('Failed to fetch project: ' + error)
       }
+      setIsGeneratingScenes(false)
       setIsLoading(false)
     }
     getProject()

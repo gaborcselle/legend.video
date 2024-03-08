@@ -12,12 +12,16 @@ interface ProjectsContextType {
   setShots: (shots: Shot[]) => void;
   projects: Project[];
   setProjects: (projects: Project[]) => void;
+  isGeneratingProjects: boolean;
+  setIsGeneratingProjects: (isGenerating: boolean) => void;
   isGeneratingScenes: boolean;
   setIsGeneratingScenes: (isGenerating: boolean) => void;
   userProfile: UserProfile | undefined;
   setUserProfile: (user: UserProfile) => void;
   isCreditAlertOpen: boolean;
   setIsCreditAlertOpen: (isOpen: boolean) => void;
+  sceneCount: number[];
+  setSceneCount: (num: number[]) => void;
   resetState: () => void;
 }
 
@@ -51,9 +55,11 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [shots, setShots] = useState<Shot[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [isGeneratingProjects, setIsGeneratingProjects] = useState<boolean>(false);
   const [isGeneratingScenes, setIsGeneratingScenes] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [isCreditAlertOpen, setIsCreditAlertOpen] = useState<boolean>(false);
+  const [sceneCount, setSceneCount] = useState<number[]>([3]);
 
   const resetState = () => {
     setProject({
@@ -66,6 +72,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
       title: ''
     });
     setScenes([]);
+    setSceneCount([3]);
     setIsGeneratingScenes(false);
     setIsCreditAlertOpen(false);
   }
@@ -82,12 +89,16 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
           setShots,
           projects,
           setProjects,
+          isGeneratingProjects,
+          setIsGeneratingProjects,
           isGeneratingScenes,
           setIsGeneratingScenes,
           userProfile,
           setUserProfile,
           isCreditAlertOpen,
           setIsCreditAlertOpen,
+          sceneCount,
+          setSceneCount,
           resetState
         }
       }
