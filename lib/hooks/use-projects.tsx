@@ -12,8 +12,8 @@ interface ProjectsContextType {
   setShots: (shots: Shot[]) => void;
   projects: Project[];
   setProjects: (projects: Project[]) => void;
-  isGeneratingProjects: boolean;
-  setIsGeneratingProjects: (isGenerating: boolean) => void;
+  isGeneratingProject: boolean;
+  setIsGeneratingProject: (isGenerating: boolean) => void;
   isGeneratingScenes: boolean;
   setIsGeneratingScenes: (isGenerating: boolean) => void;
   userProfile: UserProfile | undefined;
@@ -55,7 +55,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [shots, setShots] = useState<Shot[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [isGeneratingProjects, setIsGeneratingProjects] = useState<boolean>(false);
+  const [isGeneratingProject, setIsGeneratingProject] = useState<boolean>(false);
   const [isGeneratingScenes, setIsGeneratingScenes] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [isCreditAlertOpen, setIsCreditAlertOpen] = useState<boolean>(false);
@@ -89,8 +89,8 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
           setShots,
           projects,
           setProjects,
-          isGeneratingProjects,
-          setIsGeneratingProjects,
+          isGeneratingProject,
+          setIsGeneratingProject,
           isGeneratingScenes,
           setIsGeneratingScenes,
           userProfile,

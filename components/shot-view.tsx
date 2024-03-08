@@ -54,7 +54,9 @@ export default function ShotView(props: IShotProps) {
   const { execTime, setPending } = useExecTimeCounter();
 
   useEffect(() => {
+    // fetch the shot data
     const fetchData = async () => {
+      // fetch the shot prompts
       try {
         const shotPrompts = await supabase
           .from('shot_prompts')
@@ -70,6 +72,7 @@ export default function ShotView(props: IShotProps) {
         const propmtIndex = props.shot.selected_prompt ?? 0;
         setCurrentPromptIndex(propmtIndex);
 
+        // fetch the shot stills
         const shotStills = await supabase
           .from('shot_stills')
           .select('*')
@@ -84,6 +87,7 @@ export default function ShotView(props: IShotProps) {
         const stillIndex = shotPrompts.data[propmtIndex].selected_still ?? 0;
         setCurrentStillIndex(stillIndex)
 
+        // fetch the shot videos if we have stills
         if (shotStills.data.length > 0) {
           const shotVideos = await supabase
             .from('shot_videos')
@@ -100,6 +104,7 @@ export default function ShotView(props: IShotProps) {
           setCurrentVideoIndex(videoIndex);
         }
 
+        // if we have prompt but we don't have still, we generate still 
         if (shotPrompts.data.length > 0) {
           if (shotStills.data.length === 0) {
             generateStill(shotPrompts.data[propmtIndex]);
@@ -126,6 +131,7 @@ export default function ShotView(props: IShotProps) {
   };
 
   const handlePromptNavigation = async (newIndex: number) => {
+    // fetch the shot stills
     try {
       const shotStills = await supabase
         .from('shot_stills')
@@ -136,6 +142,7 @@ export default function ShotView(props: IShotProps) {
         throw new Error('Failed to fetch stills');
       }
 
+      // fetch the shot videos
       const shotVideos = await supabase
         .from('shot_videos')
         .select('*')
@@ -145,6 +152,7 @@ export default function ShotView(props: IShotProps) {
         throw new Error('Failed to fetch videos');
       }
 
+      // update the selected prompt of the shot
       const updatedShot = await supabase
         .from('shots')
         .update({ 'selected_prompt': prompts[newIndex].seq_num })
@@ -178,6 +186,7 @@ export default function ShotView(props: IShotProps) {
   };
 
   const handleStillNavigation = async (newIndex: number) => {
+    // fetch the shot videos
     try {
       const shotVideos = await supabase
         .from('shot_videos')
@@ -190,6 +199,7 @@ export default function ShotView(props: IShotProps) {
   
       setVideos(shotVideos.data);
 
+      // update the selected still of the prompt
       const updatedPrompt = await supabase
         .from('shot_prompts')
         .update({ 'selected_still': newIndex })
@@ -217,6 +227,7 @@ export default function ShotView(props: IShotProps) {
   }
 
   const handleVideoNavigation = async (newIndex: number) => {
+    // update the selected video of the still
     try {
       const updatedStill = await supabase
         .from('shot_stills')

@@ -1,3 +1,5 @@
+// this is the new video page
+
 "use client"
 
 import { useEffect } from 'react'

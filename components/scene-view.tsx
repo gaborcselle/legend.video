@@ -29,6 +29,7 @@ export default function SceneView(props: IPropsSceneView) {
   const { execTime, setPending } = useExecTimeCounter()
 
   useEffect(() => {
+    // fetch the shots
     const fetchShots = async () => {
       try {
         const shots = await supabase
@@ -39,10 +40,12 @@ export default function SceneView(props: IPropsSceneView) {
         if (shots.error) {
           throw new Error(shots.error.message)
         }
+        // if we have shots, we set the shots
         if (shots.data.length > 0) {
           setShots(shots.data)
           setIsLoading(false)
         } else {
+          // if we don't have shots, we generate the shots
           setIsGeneratingShots(true)
           setPending(true)
           const res = await fetch('/api/gen_project_3_shots', {
@@ -90,10 +93,12 @@ export default function SceneView(props: IPropsSceneView) {
   }
 
   const handleDragStart = (shot: Shot) => {
+    // on drag start set the dragged item
     setDraggedItem(shot);
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>, index: number) => {
+    // while dragging over, change the item order in the UI
     event.preventDefault();
     if (draggedItem === null || draggedItem.seq_num === index) return;
     let updatedShots = [...shots];
@@ -108,11 +113,13 @@ export default function SceneView(props: IPropsSceneView) {
   };
 
   const handleDragEnd = () => {
+    // on drag end, reset the draggable state and dragged item
     setIsDraggable(false);
     setDraggedItem(null);
   };
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    // on drop, update the database
     event.preventDefault();
     if (!shouldUpdateDB) return;
     try {
@@ -129,6 +136,7 @@ export default function SceneView(props: IPropsSceneView) {
     setShouldUpdateDB(false);
   };
 
+  // if we're generating shots, we show the according loader
   if (isGenatingShots) {
     return (
       <div className='mt-2 flex items-center gap-1'>
@@ -138,6 +146,7 @@ export default function SceneView(props: IPropsSceneView) {
     )
   }
 
+  // if we're fetching shots, we show the according loader
   if (isLoading) {
     return  (
       <Skeleton className="h-[553px] w-[98%] rounded-x mt-10" />

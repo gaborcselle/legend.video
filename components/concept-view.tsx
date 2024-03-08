@@ -8,16 +8,17 @@ import { useProjects } from '@/lib/hooks/use-projects'
 import { useExecTimeCounter } from "@/lib/hooks/use-exec-time-counter"
 
 export default function ConceptView() {
-  const { project, isGeneratingProjects } = useProjects()
+  const { project, isGeneratingProject } = useProjects()
   const { execTime, setPending } = useExecTimeCounter()
 
+  // if we're generating project, we add timer
   useEffect(() => {
-    if (isGeneratingProjects) {
+    if (isGeneratingProject) {
       setPending(true)
     } else {
       setPending(false)
     }
-  }, [isGeneratingProjects])
+  }, [isGeneratingProject])
 
   return (
     <Card>
@@ -26,7 +27,7 @@ export default function ConceptView() {
       </CardHeader>
       <CardContent className="mx-3">
         <div>{project?.concept ?? ''}</div>
-        {isGeneratingProjects && (
+        {isGeneratingProject && (
           <div className='mt-2 flex items-center gap-1'>
             <IconSpinner />
             <span>Generating title... { `${execTime}s` }</span>

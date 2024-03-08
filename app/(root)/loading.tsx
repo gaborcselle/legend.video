@@ -1,3 +1,5 @@
+// this page gets called whenever you're loading a page for videos
+
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Loading() {

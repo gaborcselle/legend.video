@@ -1,3 +1,7 @@
+// this is the main layout page for the app
+// it is used to wrap all the pages in the app
+// it contains the header and the main content of the app
+
 import { Toaster } from 'react-hot-toast'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'

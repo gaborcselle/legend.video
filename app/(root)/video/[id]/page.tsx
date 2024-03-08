@@ -1,3 +1,5 @@
+// this is the video detail page
+
 "use client"
 
 import { useEffect, useState } from 'react'
@@ -11,10 +13,13 @@ export default function VideoPage({ params }: { params: { id: string } }) {
 
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string>()
-  const { setProject, setScenes, setIsGeneratingProjects, setIsGeneratingScenes, sceneCount } = useProjects()
+  const { setProject, setScenes, setIsGeneratingProject, setIsGeneratingScenes, sceneCount } = useProjects()
   
   useEffect(() => {
-    setIsGeneratingProjects(false)
+    // initializing that we're not generating project
+    setIsGeneratingProject(false)
+
+    // fetch the project data
     const getProject = async () => {
       try {
         const project = await supabase.from('projects').select('*').eq('id', params.id)
@@ -24,14 +29,19 @@ export default function VideoPage({ params }: { params: { id: string } }) {
         if (project.data) {
           setProject(project.data[0])
         }
+
+        // once we get the project data, we fetch the scenes
         const scenes = await supabase.from('scenes').select('*').eq('project_id', params.id).order('seq_num', { ascending: true })
         if (scenes.error) {
           throw new Error(scenes.error.message)
         }
         setIsLoading(false)
+
+        // if we have scenes, we set the scenes
         if (scenes.data.length > 0) {
           setScenes(scenes.data)
         } else {
+          // if we don't have scenes, we generate the scenes
           setIsGeneratingScenes(true)
           const res = await fetch('/api/gen_project_2_scenes', {
             method: 'POST',

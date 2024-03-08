@@ -29,7 +29,7 @@ interface SidebarItemProps {
 export function SidebarItem({ index, project, children }: SidebarItemProps) {
   const pathname = usePathname()
   const { toggleSidebar } = useSidebar()
-  const { isGeneratingProjects, resetState } = useProjects()
+  const { isGeneratingProject, resetState } = useProjects()
 
   const isActive = pathname === `/video/${project.id}`
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
@@ -128,7 +128,7 @@ export function SidebarItem({ index, project, children }: SidebarItemProps) {
           </span>
         </div>
       </Link>
-      {(isActive && !isGeneratingProjects) && <div className="absolute right-2 top-1">{children}</div>}
+      {(isActive && !isGeneratingProject) && <div className="absolute right-2 top-1">{children}</div>}
     </motion.div>
   )
 }

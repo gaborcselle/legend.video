@@ -12,6 +12,7 @@ export default function ConceptScenes() {
   const { scenes, isGeneratingScenes } = useProjects()
   const { execTime, setPending } = useExecTimeCounter()
 
+  // if we're generating scenes, we add timer
   useEffect(() => {
     if (isGeneratingScenes) {
       setPending(true)
@@ -20,6 +21,7 @@ export default function ConceptScenes() {
     }
   }, [isGeneratingScenes])
 
+  // if we're generating scenes, we show the according loader
   if (isGeneratingScenes) {
     return (
       <Card className='mt-10 p-4'>

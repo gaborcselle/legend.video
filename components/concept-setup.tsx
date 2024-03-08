@@ -34,7 +34,7 @@ export default function ConceptSetup() {
     projects,
     setProject,
     setProjects,
-    setIsGeneratingProjects,
+    setIsGeneratingProject,
     setUserProfile,
     userProfile,
     setIsCreditAlertOpen,
@@ -63,6 +63,7 @@ export default function ConceptSetup() {
   }
 
   const generateStories = async () => {
+    // if we have a concept, we generate the project
     if ((project?.concept?.length || 0) > 0) {
       if (!userProfile) {
         throw new Error('User profile not found');
@@ -71,7 +72,7 @@ export default function ConceptSetup() {
         setIsCreditAlertOpen(true)
         return
       }
-      setIsGeneratingProjects(true)
+      setIsGeneratingProject(true)
       try {
         const res = await fetch('/api/gen_project_1_name', {
           method: 'POST',
@@ -85,6 +86,7 @@ export default function ConceptSetup() {
             numScenes: sceneCount[0]
           }),
         })
+        // deduct 20 credits
         setUserProfile({
           ...userProfile,
           credits: userProfile.credits! - 20
@@ -96,16 +98,18 @@ export default function ConceptSetup() {
   
         const data = await res.json()
   
+        // add the project to the list of projects
         setProjects([
           data.project,
           ...projects
         ])
 
+        // redirect to the project page
         router.push(`/video/${data.project.id}`)
       } catch (error) {
         setErrorMsg(error as string)
       }
-      // setIsGeneratingProjects(false)
+      // setIsGeneratingProject(false)
     }
   }
 
