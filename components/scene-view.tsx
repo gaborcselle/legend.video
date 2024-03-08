@@ -156,7 +156,7 @@ export default function SceneView(props: IPropsSceneView) {
   return (
     <>
       {(shots && shots.length > 0) && (
-        <div className="grid grid-cols-12 gap-6 mt-10">
+        <div className="grid grid-cols-12 gap-3 mt-10">
           {
             shots.map((shot, index) => (
               <Card

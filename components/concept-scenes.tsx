@@ -44,7 +44,7 @@ export default function ConceptScenes() {
             <Card key={scene.id} className='mt-10 p-4'>
               <CardTitle>{scene.title}</CardTitle>
               <CardDescription>{scene.description}</CardDescription>
-              <CardContent>
+              <CardContent className="p-0">
                 <SceneView scene={scene} />
               </CardContent>
             </Card>

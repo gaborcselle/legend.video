@@ -60,20 +60,20 @@ export function UserMenu({ user }: any) {
             <div className="text-xs text-zinc-500">{user?.email}</div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="cursor-pointer">
             <Link href="/credits" className="text-xs">            
               Buy Credits
               <IconCoin className="size-3 ml-auto" />
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="cursor-pointer">
             <Link href="/faq" className="text-xs">
               FAQ
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={signOut}
-            className="text-xs"
+            className="text-xs cursor-pointer"
           >
             Log Out
           </DropdownMenuItem>
