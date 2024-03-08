@@ -3,6 +3,8 @@ import OAuthWithGoogle from '@/components/login-button-google'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default async function SignInPage() {
   const cookieStore = cookies()
@@ -22,6 +24,11 @@ export default async function SignInPage() {
       <p>Sign in with your GitHub or Google account to get started.</p>
       <OAuthWithGithub />
       <OAuthWithGoogle />
+      <Link href="/faq">
+        <Button variant="secondary">
+          FAQ
+        </Button>
+      </Link>
     </div>
   )
 }

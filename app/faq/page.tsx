@@ -1,3 +1,8 @@
+import type { Metadata } from 'next'
+ 
+export const metadata: Metadata = {
+  title: 'FAQ',
+}
 
 export default function FAQ() {
     return (
@@ -22,14 +27,14 @@ export default function FAQ() {
             </p>
 
             <h2 className="text-xl font-bold">4. How can I help?</h2>
-            <p>
+            <div>
                 We need help with lots of things:
                 <ol>
                     <li>Keeping scenes consistent - the approach we use now is text-based + choosing model checkpoints to keep styling consistent. We'd like to evaluate approaches that use latent space embeddings.</li>
                     <li>Change storyboard with prompts. You should be able to change the storyboard by saying things like &quot;add another scene&quot;.</li>
                     <li>Please check the <a className="underline" href="https://github.com/gaborcselle/legend.video/issues">issues page</a> on GitHub to see what else you can help with.</li>
                 </ol>
-            </p>
+            </div>
 
             <h2 className="text-xl font-bold">5. Do you make money with the credits?</h2>
             <p>No. We're projecting to break even after paying for hosting and AI-as-a-service fees.</p>
