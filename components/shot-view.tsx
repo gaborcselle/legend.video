@@ -444,7 +444,7 @@ export default function ShotView(props: IShotProps) {
         <AccordionItem value="item-1">
           {/* Note from Gabor: I added a p-0 here so that the accordions wouldn't take up so much space. */}
           <AccordionTrigger className="font-bold p-0">
-            <div className="flex items-center flex-1">
+            <div className="flex items-center flex-1 min-h-[55px]">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <StretchHorizontalIcon
