@@ -115,7 +115,7 @@ export default function ConceptSetup() {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="p-4">
         <CardTitle>Concept</CardTitle>
         <CardDescription>
           Describe the concept of your video, then click &quot;Generate Storyboard&quot; to have GPT-4 generate the storyboard.
