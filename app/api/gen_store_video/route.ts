@@ -4,10 +4,12 @@ import { createClient } from '@/utils/supabase/middleware'
 import { NextRequest } from 'next/server'
 
 export const maxDuration = 300;
+const VIDEO_GEN_COIN_COST = 20;
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN,
 });
+
 
 // Vercel serverless function handler
 export async function POST(req: NextRequest) {
@@ -22,13 +24,13 @@ export async function POST(req: NextRequest) {
         })
     }
 
-    let userProfile = await supabase.from('user_profiles').select().eq('owner_id', user.id);
+    let preGenUserProfile = await supabase.from('user_profiles').select().eq('owner_id', user.id);
 
-    if (userProfile.error) {
+    if (preGenUserProfile.error) {
         return new Response('Error fetching user profile', { status: 500 });
     }
 
-    if (userProfile.data[0].credits < 20) {
+    if (preGenUserProfile.data[0].credits < VIDEO_GEN_COIN_COST) {
         return new Response('Not enough credits', { status: 402 });
     }
 
@@ -92,25 +94,21 @@ export async function POST(req: NextRequest) {
     // Get JPG URL from putResult
     const mp4URL = putResult.url;
 
-    userProfile = await supabase.from('user_profiles').select().eq('owner_id', user.id);
+    const refreshedUserProfile = await supabase.from('user_profiles').select().eq('owner_id', user.id);
 
-    if (userProfile.error) {
+    if (refreshedUserProfile.error) {
         return new Response('Error fetching user profile', { status: 500 });
     }
 
-    if (userProfile.data[0].credits < 10) {
-        return new Response('Not enough credits', { status: 402 });
-    }
-
-    const newUserProfile = await supabase
+    const coinsDeductedUserProfile = await supabase
         .from('user_profiles')
         .update({
-            credits: userProfile.data[0].credits - 20
+            credits: refreshedUserProfile.data[0].credits - VIDEO_GEN_COIN_COST
         })
         .eq('owner_id', user.id)
         .select()
 
-    if (newUserProfile.error) {
+    if (coinsDeductedUserProfile.error) {
         return new Response('Error updating user profile', { status: 500 });
     }
 
