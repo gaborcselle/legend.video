@@ -36,7 +36,7 @@ export function SidebarItem({ index, project, children }: SidebarItemProps) {
   const shouldAnimate = index === 0 && isActive && newChatId
 
   const handleLinkClick = () => {
-    if (pathname !== `/video/${project.id}`) resetState()
+    // if (pathname !== `/video/${project.id}`) resetState()
     if (window.innerWidth < 768) toggleSidebar()
   }
 

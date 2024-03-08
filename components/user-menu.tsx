@@ -66,7 +66,7 @@ export function UserMenu({ user }: any) {
               <IconCoin className="size-3 ml-auto" />
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem >
+          <DropdownMenuItem asChild>
             <Link href="/faq" className="text-xs">
               FAQ
             </Link>

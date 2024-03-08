@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
         return new Response('Error fetching user profile', { status: 500 });
     }
 
-    if (userProfile.data[0].credits < 10) {
+    if (userProfile.data[0].credits < 20) {
         return new Response('Not enough credits', { status: 402 });
     }
 

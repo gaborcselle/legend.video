@@ -30,7 +30,7 @@ export default function ConceptView() {
         )
       }
       <CardContent className="mx-1">
-        <div>{project?.concept ?? ''}</div>
+        <div className={!project.title ? "mt-4" : ""}>{project?.concept ?? ''}</div>
         {isGeneratingProject && (
           <div className='mt-2 flex items-center gap-1'>
             <IconSpinner />

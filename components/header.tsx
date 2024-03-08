@@ -33,6 +33,8 @@ async function UserOrLogin() {
       )}
       <div className="flex items-center">
         <IconSeparator className="size-6 text-muted-foreground/50" />
+        Legend.video
+        <IconSeparator className="size-6 text-muted-foreground/50" />
         {user ? (
           <UserMenu user={user} />
         ) : (

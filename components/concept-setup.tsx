@@ -6,7 +6,7 @@ import { Slider } from '@/components/ui/slider'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { IconArrowRight } from '@/components/ui/icons'
+import { IconArrowRight, IconCoin } from '@/components/ui/icons'
 
 import { Project } from '@/lib/types'
 import { useProjects } from '@/lib/hooks/use-projects'
@@ -157,6 +157,8 @@ export default function ConceptSetup() {
           </Button>
           <Button className="min-w-44" onClick={generateStories} disabled={project?.concept?.trim() === ""}>
             Generate Storyboard
+            <IconCoin className="ml-2" />
+            20
           </Button>
         </div>
         {errorMsg && <div className="mt-4 text-red-500">{errorMsg}</div>}
