@@ -22,10 +22,14 @@ export default function ConceptView() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Project: {project.title}</CardTitle>
-      </CardHeader>
-      <CardContent className="mx-3">
+      {
+        project.title && (
+        <CardHeader className="p-4">
+          <CardTitle>{project.title}</CardTitle>
+        </CardHeader>
+        )
+      }
+      <CardContent className="mx-1">
         <div>{project?.concept ?? ''}</div>
         {isGeneratingProject && (
           <div className='mt-2 flex items-center gap-1'>
