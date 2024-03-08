@@ -16,6 +16,8 @@ interface ProjectsContextType {
   setIsGeneratingScenes: (isGenerating: boolean) => void;
   userProfile: UserProfile | undefined;
   setUserProfile: (user: UserProfile) => void;
+  isCreditAlertOpen: boolean;
+  setIsCreditAlertOpen: (isOpen: boolean) => void;
   resetState: () => void;
 }
 
@@ -51,6 +53,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
   const [projects, setProjects] = useState<Project[]>([]);
   const [isGeneratingScenes, setIsGeneratingScenes] = useState<boolean>(false);
   const [userProfile, setUserProfile] = useState<UserProfile>();
+  const [isCreditAlertOpen, setIsCreditAlertOpen] = useState<boolean>(false);
 
   const resetState = () => {
     setProject({
@@ -64,6 +67,7 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
     });
     setScenes([]);
     setIsGeneratingScenes(false);
+    setIsCreditAlertOpen(false);
   }
 
   return (
@@ -82,6 +86,8 @@ export const ProjectsProvider: React.FC<ProjectsProviderProps> = ({ children }) 
           setIsGeneratingScenes,
           userProfile,
           setUserProfile,
+          isCreditAlertOpen,
+          setIsCreditAlertOpen,
           resetState
         }
       }

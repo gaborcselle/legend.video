@@ -36,6 +36,7 @@ export default function ConceptSetup() {
     setIsGeneratingScenes,
     setUserProfile,
     userProfile,
+    setIsCreditAlertOpen
   } = useProjects()
   const router = useRouter()
 
@@ -63,6 +64,10 @@ export default function ConceptSetup() {
     if ((project?.concept?.length || 0) > 0) {
       if (!userProfile) {
         throw new Error('User profile not found');
+      }
+      if (userProfile.credits! < 20) {
+        setIsCreditAlertOpen(true)
+        return
       }
       setIsGeneratingScenes(true)
       try {

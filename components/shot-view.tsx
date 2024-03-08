@@ -49,7 +49,7 @@ export default function ShotView(props: IShotProps) {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [editedPrompt, setEditedPrompt] = useState<string>("");
 
-  const { userProfile, setUserProfile } = useProjects();
+  const { userProfile, setUserProfile, setIsCreditAlertOpen } = useProjects();
   const { isSidebarOpen } = useSidebar();
   const { execTime, setPending } = useExecTimeCounter();
 
@@ -351,7 +351,10 @@ export default function ShotView(props: IShotProps) {
   }
 
   const generateVideo = async () => {
-    if ((userProfile?.credits || 0) < 20) return
+    if ((userProfile?.credits || 0) < 20) {
+      setIsCreditAlertOpen(true);
+      return;
+    }
     setIsVideoGenerating(true);
     setPending(true);
     try {
