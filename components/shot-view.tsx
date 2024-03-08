@@ -600,8 +600,7 @@ export default function ShotView(props: IShotProps) {
                           !stills?.[currentStillIndex] ||
                           (prompts?.[currentPromptIndex].prompt ?? "").trim() === "" ||
                           isVideoLoading ||
-                          isEditable || 
-                          (userProfile?.credits || 0) < 10
+                          isEditable
                         }
                       >
                         {isVideoGenerating ? (
