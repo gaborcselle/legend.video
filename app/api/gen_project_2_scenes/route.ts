@@ -5,6 +5,7 @@ import { chatCompletionRequest } from '@/lib/gen_utils'
 import { Project } from "@/lib/types"
 
 export const maxDuration = 300;
+export const STORYBOARD_GEN_CREDITS_COST = 20;
 
 const openai = new OpenAI();
 
@@ -154,6 +155,28 @@ export async function POST(req: NextRequest) {
         if (scenes.error) {
             return new Response('Error inserting scenes', { status: 500 });
         }
+
+        // Deduct 20 credits from user's account
+        const userProfile = await supabase.from('user_profiles').select().eq('owner_id', user.id);
+
+        if (userProfile.error) {
+            return new Response('Error fetching user profile', { status: 500 });
+        }
+
+        const coinsDeductedUserProfile = await supabase
+            .from('user_profiles')
+            .update({
+                credits: userProfile.data[0].credits - STORYBOARD_GEN_CREDITS_COST
+            })
+            .eq('owner_id', user.id)
+            .select()
+
+        if (coinsDeductedUserProfile.error) {
+            // don't fail the request if this fails, since we've already
+            // incurred the cost of scene generation. Just log it.
+            console.error('Error updating user profile', coinsDeductedUserProfile.error);
+        }
+
 
         const responsePayload = JSON.stringify({
             project: project.id,

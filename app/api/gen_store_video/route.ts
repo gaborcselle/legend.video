@@ -4,7 +4,7 @@ import { createClient } from '@/utils/supabase/middleware'
 import { NextRequest } from 'next/server'
 
 export const maxDuration = 300;
-const VIDEO_GEN_COIN_COST = 20;
+const VIDEO_GEN_CREDITS_COST = 20;
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN,
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         return new Response('Error fetching user profile', { status: 500 });
     }
 
-    if (preGenUserProfile.data[0].credits < VIDEO_GEN_COIN_COST) {
+    if (preGenUserProfile.data[0].credits < VIDEO_GEN_CREDITS_COST) {
         return new Response('Not enough credits', { status: 402 });
     }
 
@@ -103,13 +103,15 @@ export async function POST(req: NextRequest) {
     const coinsDeductedUserProfile = await supabase
         .from('user_profiles')
         .update({
-            credits: refreshedUserProfile.data[0].credits - VIDEO_GEN_COIN_COST
+            credits: refreshedUserProfile.data[0].credits - VIDEO_GEN_CREDITS_COST
         })
         .eq('owner_id', user.id)
         .select()
 
     if (coinsDeductedUserProfile.error) {
-        return new Response('Error updating user profile', { status: 500 });
+        // don't fail the request if this fails, since we've already
+        // incurred the cost of video generation. Just log it.
+        console.error('Error updating user profile', coinsDeductedUserProfile.error);
     }
 
     const video = await supabase
