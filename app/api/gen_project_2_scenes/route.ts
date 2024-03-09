@@ -5,7 +5,7 @@ import { chatCompletionRequest } from '@/lib/gen_utils'
 import { Project } from "@/lib/types"
 
 export const maxDuration = 300;
-export const STORYBOARD_GEN_CREDITS_COST = 20;
+const STORYBOARD_GEN_CREDITS_COST = 20;
 
 const openai = new OpenAI();
 
