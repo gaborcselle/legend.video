@@ -52,6 +52,7 @@ export default function ShotView(props: IShotProps) {
   const { userProfile, setUserProfile, setIsCreditAlertOpen } = useProjects();
   const { isSidebarOpen } = useSidebar();
   const { execTime, setPending } = useExecTimeCounter();
+  const { execTime: stillExecTime, setPending: setStillPending, pending: stillPending } = useExecTimeCounter();
 
   useEffect(() => {
     // fetch the shot data
@@ -254,6 +255,7 @@ export default function ShotView(props: IShotProps) {
   const generateStill = async (prompt?: ShotPrompt) => {
     setIsStillGenerating(true);
     setPending(true);
+    setStillPending(true);
     let newPrompt: ShotPrompt | undefined;
     try {
       // check if we have to create a new prompt
@@ -341,6 +343,8 @@ export default function ShotView(props: IShotProps) {
     }
     setIsStillGenerating(false);
     setPending(false);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setStillPending(false);
   }
 
   const reGenerateStill = async () => {
@@ -502,7 +506,14 @@ export default function ShotView(props: IShotProps) {
         </AccordionItem>
       </Accordion>
       <div>
-        <div className="flex flex-col justify-center items-center border rounded-lg min-h-[157px]">
+        <div className="bg-green-300 flex flex-col justify-center items-center border rounded-lg overflow-hidden min-h-[157px] relative">
+          { stillPending && (<div className="absolute w-full h-full top-0 left-0 bg-white dark:bg-neutral-950 opacity-100 flex items-center justify-center">
+              <Button className="rounded-sm py-2 px-4 min-w-[96px]" disabled>
+                <IconSpinner className="mr-1" />
+                { `${stillExecTime}s` }
+              </Button>
+          </div>) }
+        
           {videos && videos[currentVideoIndex] ? (
             <video
               src={videos[currentVideoIndex].video_url ?? ""}
@@ -558,11 +569,11 @@ export default function ShotView(props: IShotProps) {
                 isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
               )}>
                 <span>Still:</span>
-                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable || isStillGenerating || isVideoGenerating}><IconChevronLeft /></Button>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable || isStillGenerating || isVideoGenerating || stillPending}><IconChevronLeft /></Button>
                 <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
-                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable || isStillGenerating || isVideoGenerating}><IconChevronRight /></Button>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable || isStillGenerating || isVideoGenerating || stillPending}><IconChevronRight /></Button>
                 {stills && stills[currentStillIndex] && (
-                  <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1}>
+                  <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1 || stillPending}>
                     <IconRefresh />
                   </Button>
                 )}
@@ -595,6 +606,7 @@ export default function ShotView(props: IShotProps) {
                         className="ml-3 rounded-sm py-2 px-4 min-w-[129px]"
                         onClick={generateVideo}
                         disabled={
+                          stillPending ||
                           isVideoGenerating ||
                           isStillGenerating ||
                           !stills?.[currentStillIndex] ||
