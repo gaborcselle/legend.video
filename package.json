@@ -34,6 +34,8 @@
     "@vercel/node": "^3.0.19",
     "@vercel/og": "^0.6.2",
     "ai": "^2.2.35",
+    "archiver": "^7.0.1",
+    "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "focus-trap-react": "^10.2.3",
