@@ -2,12 +2,16 @@
 
 import ConceptHeader from '@/components/concept-header'
 import ConceptScenes from "@/components/concept-scenes"
+import ConceptDownload from '@/components/concept-download'
 
 export default function ProjectView() {
   return (
-    <div className="mx-auto px-4 my-10">
-      <ConceptHeader />
-      <ConceptScenes />
+    <div className="mx-auto w-full">
+      <div className="flex flex-col py-10 px-4">
+        <ConceptHeader />
+        <ConceptScenes />
+      </div>
+      <ConceptDownload />
     </div>
   )
 }
