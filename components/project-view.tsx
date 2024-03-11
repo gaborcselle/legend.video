@@ -2,7 +2,7 @@
 
 import ConceptHeader from '@/components/concept-header'
 import ConceptScenes from "@/components/concept-scenes"
-import ConceptDownload from '@/components/concept-download'
+import ConceptDownload from './concept-download'
 
 export default function ProjectView() {
   return (
@@ -10,8 +10,8 @@ export default function ProjectView() {
       <div className="flex flex-col py-10 px-4">
         <ConceptHeader />
         <ConceptScenes />
+        <ConceptDownload />
       </div>
-      <ConceptDownload />
     </div>
   )
 }
