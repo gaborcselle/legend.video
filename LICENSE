@@ -19,3 +19,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Third-Party Licenses
+--------------------
+
+Portions of this software are based on the Next.js AI Chatbot, which can 
+licensed under the Apache License 2.0.
+https://github.com/vercel/ai-chatbot
+
+The license for the Next.js AI Chatbot can be found here:
+https://github.com/vercel/ai-chatbot?tab=License-1-ov-file#readme
+
+A full text of the Apache License 2.0 can be found here:
+http://www.apache.org/licenses/LICENSE-2.0
