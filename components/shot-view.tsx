@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Shot, ShotPrompt, ShotStill, ShotVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconSpinner } from '@/components/ui/icons'
+import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconSpinner, IconZoom } from '@/components/ui/icons'
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
+import ExpandableMedia from "@/components/expandable-media";
 import { useDebouncedCallback } from 'use-debounce';
 
 import { createClient } from '@/utils/supabase/client'
@@ -48,6 +49,7 @@ export default function ShotView(props: IShotProps) {
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [editedPrompt, setEditedPrompt] = useState<string>("");
+  const [expand, setExpand] = useState<number>(-1);
 
   const { userProfile, setUserProfile, setIsCreditAlertOpen } = useProjects();
   const { isSidebarOpen } = useSidebar();
@@ -530,9 +532,12 @@ export default function ShotView(props: IShotProps) {
                         {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
                       </Button>
                     ) : (
-                      <>
+                      <ExpandableMedia
+                        expand={expand === currentStillIndex}
+                        close={() => setExpand(-1)}
+                      >
                         <img className="cursor-pointer" src={stills[currentStillIndex].still_url ?? ""} alt="Still" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')} />
-                      </>
+                      </ExpandableMedia>
                     )
                   }
                 </>
@@ -569,6 +574,15 @@ export default function ShotView(props: IShotProps) {
               </div>
             )
           }
+
+          <Button
+            className="rounded-full p-2 ml-2"
+            variant="ghost"
+            onClick={() => setExpand(currentStillIndex)}
+          >
+            <IconZoom />
+          </Button>
+
           {
             ((videos?.length ?? 0) > 0 && !isEditable) ? (
               // adjust the grid layout here
