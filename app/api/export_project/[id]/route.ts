@@ -3,8 +3,9 @@ import { createClient } from '@/utils/supabase/middleware'
 import axios from 'axios'
 import archiver from 'archiver'
 import { createWriteStream, createReadStream } from 'fs'
-import { Readable } from 'stream'
 
+// TODO: We need to refactor this to use in-memory streams
+//       instead of writing to disk
 export async function GET(request: NextRequest, { params }) {
   const { supabase } = createClient(request)
 
@@ -147,11 +148,12 @@ export async function GET(request: NextRequest, { params }) {
     })
   )
 
-  archive.finalize()
+  archive.finalize();
 
-  const dataBuffer: Buffer[] = []
+  const dataBuffer: Buffer[] = [];
+
   // TODO(gabor): We need the fix this hack, ideally all of this data should be streamed
-  const readStream = createReadStream(`archive_${id}.zip`)s
+  const readStream = createReadStream(`archive_${id}.zip`);
   for await (const chunk of readStream) {
     dataBuffer.push(chunk)
   }
