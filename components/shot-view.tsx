@@ -506,7 +506,7 @@ export default function ShotView(props: IShotProps) {
         </AccordionItem>
       </Accordion>
       <div>
-        <div className="bg-green-300 flex flex-col justify-center items-center border rounded-lg overflow-hidden min-h-[157px] relative">
+        <div className="flex flex-col justify-center items-center border rounded-lg overflow-hidden min-h-[157px] relative">
           { stillPending && (<div className="absolute w-full h-full top-0 left-0 bg-white dark:bg-neutral-950 opacity-100 flex items-center justify-center">
               <Button className="rounded-sm py-2 px-4 min-w-[96px]" disabled>
                 <IconSpinner className="mr-1" />
