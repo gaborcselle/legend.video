@@ -1,13 +1,62 @@
 import { Button } from '@/components/ui/button'
-import { IconDownload } from '@/components/ui/icons'
+import { IconDownload, IconSpinner } from '@/components/ui/icons'
+import { useExecTimeCounter } from '@/lib/hooks/use-exec-time-counter'
 import { useProjects } from '@/lib/hooks/use-projects'
 
 export default function ConceptDownload() {
   const { scenes, project } = useProjects()
 
+  const { execTime, pending, setPending } = useExecTimeCounter()
+
+  const downloadFile = async (readableStream: ReadableStream) => {
+    const blob = await readableStreamToBlob(readableStream)
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `project_assets_${project?.id}.zip`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const readableStreamToBlob = async (
+    readableStream: ReadableStream
+  ): Promise<Blob> => {
+    const reader = readableStream.getReader()
+    const chunks: Uint8Array[] = []
+    let length = 0
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      if (value) {
+        chunks.push(value)
+        length += value.length
+      }
+    }
+    return new Blob(chunks, { type: 'application/zip' }) // Adjust the MIME type as needed
+  }
+
   const exportProject = async () => {
-    const res = await fetch('/api/export_project/' + project?.id)
-    console.log(res)
+    setPending(true)
+    await fetch('/api/export_project/' + project?.id)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok')
+        }
+        return res.body
+      })
+      .then(readableStream => {
+        if (!readableStream) {
+          throw new Error('No readable stream')
+        }
+        setPending(false)
+        return downloadFile(readableStream)
+      })
+      .catch(error => {
+        console.error(error)
+        alert('An error occurred')
+      })
   }
 
   return (
@@ -25,9 +74,19 @@ export default function ConceptDownload() {
             <Button
               className="ml-auto space-x-2"
               onClick={() => exportProject()}
+              disabled={pending}
             >
-              <IconDownload />
-              <span>Download All</span>
+              {pending ? (
+                <>
+                  <IconSpinner className="mr-1" />
+                  {`${execTime}s`}
+                </>
+              ) : (
+                <>
+                  <IconDownload />
+                  <span>Download All</span>
+                </>
+              )}
             </Button>
           </div>
         </>
