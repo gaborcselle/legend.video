@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
 
 export default function FaqItem({ children, title }) {
-  const [expand, setExpand] = useState(false)
+  const [expand, setExpand] = useState(true)
   return (
-    <div className="flex flex-col space-y-2 border-t pt-4">
+    <div className="flex flex-col space-y-2 border-t pt-4 faq-item">
       <button
         className="font-bold flex items-center justify-between text-left space-x-4"
         onClick={() => setExpand(!expand)}
