@@ -10,6 +10,7 @@ import { UserMenu } from '@/components/user-menu'
 import { SidebarToggle } from './sidebar-toggle'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
+import Logo from '@/components/logo'
 
 async function UserOrLogin() {
   const cookieStore = cookies()
@@ -33,6 +34,7 @@ async function UserOrLogin() {
       )}
       <div className="flex items-center">
         <IconSeparator className="size-6 text-muted-foreground/50" />
+        <Logo className="w-6 h-6 mr-1" />
         Legend.video
         <IconSeparator className="size-6 text-muted-foreground/50" />
         {user ? (
