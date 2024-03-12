@@ -3,6 +3,7 @@ import { Shot, ShotPrompt, ShotStill, ShotVideo } from '@/lib/types'
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { IconChevronLeft, IconChevronRight, IconCoin, IconPencil, IconRefresh, IconSpinner } from '@/components/ui/icons'
+import ExpandableMedia from "@/components/expandable-media";
 import {
   Accordion,
   AccordionContent,
@@ -53,6 +54,8 @@ export default function ShotView(props: IShotProps) {
   const { isSidebarOpen } = useSidebar();
   const { execTime, setPending } = useExecTimeCounter();
   const { execTime: stillExecTime, setPending: setStillPending, pending: stillPending } = useExecTimeCounter();
+
+  const [expand, setExpand] = useState<number>(-1)
 
   useEffect(() => {
     // fetch the shot data
@@ -562,9 +565,9 @@ export default function ShotView(props: IShotProps) {
                         {isStillGenerating ? "Generating..." : isSillLoading ? "Loading..." : "Generate Still"}
                       </Button>
                     ) : (
-                      <>
-                        <img className="cursor-pointer" src={stills[currentStillIndex].still_url ?? ""} alt="Still" onClick={() => window.open(stills[currentStillIndex].still_url ?? "", '_blank')} />
-                      </>
+                      <ExpandableMedia expand={expand === currentStillIndex} close={() => setExpand(-1)} open={() => setExpand(currentStillIndex)}>
+                        <img className="cursor-pointer" src={stills[currentStillIndex].still_url ?? ""} alt="Still" onClick={() => setExpand(currentStillIndex)} />
+                      </ExpandableMedia>
                     )
                   }
                 </>
