@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
+import GoogleAnalytics from '@/components/google-analytics-tag'
 
 export const metadata = {
   // We need "https://" in metadataBase because process.env.VERCEL_URL does not contain protocol:
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           </div>
           {/* <TailwindIndicator /> */}
         </Providers>
+        <GoogleAnalytics />
       </body>
     </html>
   )
