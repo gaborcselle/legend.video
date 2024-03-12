@@ -13,7 +13,7 @@ export default function ConceptDownload() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'project.zip' // Change the filename as needed
+    a.download = `project_assets_${project?.id}.zip`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
