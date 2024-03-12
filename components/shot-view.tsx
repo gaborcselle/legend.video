@@ -186,7 +186,25 @@ export default function ShotView(props: IShotProps) {
     debounceHandlePromptNavigation(newIndex)
   };
 
+  /* We need a fake still to insert it into the stills array while
+   * generating a new one in order to show the loading state without
+   * disabling the navigation */
+  const fakeStill: ShotStill = {
+    id: -1,
+    created_at: '',
+    is_new_video_generating: null,
+    owner_id: null,
+    selected_video: null,
+    seq_num: null,
+    shot_prompt_id: null,
+    still_url: null
+  }
+
   const handleStillNavigation = async (newIndex: number) => {
+    if(stills[newIndex].id === fakeStill.id){
+      setIsVideoLoading(false);
+      return;
+    }
     // fetch the shot videos
     try {
       const shotVideos = await supabase
@@ -302,6 +320,9 @@ export default function ShotView(props: IShotProps) {
 
       const currentPrompt = prompt ?? prompts[currentPromptIndex]
 
+      setStills([...stills, fakeStill]);
+      setCurrentStillIndex(stills.length);
+
       const response = await fetch('/api/gen_store_still', {
         method: 'POST',
         headers: {
@@ -333,7 +354,7 @@ export default function ShotView(props: IShotProps) {
         ]);
       } else {
         setStills([
-          ...stills,
+          ...stills.filter(s => s.id !== fakeStill.id),
           still
         ]);
         setCurrentStillIndex(stills.length);
@@ -506,8 +527,8 @@ export default function ShotView(props: IShotProps) {
         </AccordionItem>
       </Accordion>
       <div>
-        <div className="flex flex-col justify-center items-center border rounded-lg overflow-hidden min-h-[157px] relative">
-          { stillPending && (<div className="absolute w-full h-full top-0 left-0 bg-white dark:bg-neutral-950 opacity-100 flex items-center justify-center">
+        <div className="flex flex-col justify-center items-center border rounded-lg overflow-hidden min-h-[157px] relative" style={{ aspectRatio: 16/9 }}>
+          { stillPending && (currentStillIndex + 1 === stills?.length) && (<div className="absolute w-full h-full top-0 left-0 bg-white dark:bg-neutral-950 opacity-100 flex items-center justify-center">
               <Button className="rounded-sm py-2 px-4 min-w-[96px]" disabled>
                 <IconSpinner className="mr-1" />
                 { `${stillExecTime}s` }
@@ -569,9 +590,9 @@ export default function ShotView(props: IShotProps) {
                 isSidebarOpen && "lg:col-span-12 xl:col-span-12 2xl:col-span-6"
               )}>
                 <span>Still:</span>
-                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable || isStillGenerating || isVideoGenerating || stillPending}><IconChevronLeft /></Button>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('prev')} disabled={!isPrevStillAvailable || isVideoGenerating}><IconChevronLeft /></Button>
                 <span className="mx-2">{currentStillIndex + 1}/{stills?.length}</span>
-                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable || isStillGenerating || isVideoGenerating || stillPending}><IconChevronRight /></Button>
+                <Button className="rounded-full p-2" variant="ghost" onClick={() => navigateStills('next')} disabled={!isNextStillAvailable || isVideoGenerating}><IconChevronRight /></Button>
                 {stills && stills[currentStillIndex] && (
                   <Button className="rounded-full p-2 ml-2" variant="ghost" onClick={reGenerateStill} disabled={isStillGenerating || isVideoGenerating || (userProfile?.credits || 0) < 1 || stillPending}>
                     <IconRefresh />
