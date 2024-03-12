@@ -21,13 +21,15 @@ export default async function SignInPage() {
   return (
     <>
       <video
-        src="https://ghboj6c35daxmxn2.public.blob.vercel-storage.com/video_O9U6rn9DTQo4LJMy4jmD4nqTgLtJbW3AkcoJBjwtnKee1PekA_001082.mp4-yufx3dhUDn3jnvt8MxbHQW4T4CSgl7.mp4"
+        src="https://ghboj6c35daxmxn2.public.blob.vercel-storage.com/legend_video_hp_bg_30_fps-yrgpUIp7bA63Ap9qYL0RG3FOp20ZPp.mp4"
         autoPlay
         loop
+        muted
         className="w-screen h-screen absolute top-0 left-0 object-cover"
       />
-      <div className="flex h-[calc(100vh-theme(spacing.16))] items-center justify-center py-10 flex-col gap-4 bg-slate-950 bg-opacity-30 z-[2] text-white">
-        <p><b>Legend.video</b> is your <a className="underline" href="https://github.com/gaborcselle/legend.video">open source</a> AI director. Describe a story, it will make a video with Gen AI.</p>
+      <div className="flex h-[calc(100vh-theme(spacing.16))] items-center justify-center py-10 flex-col gap-4 bg-slate-950 bg-opacity-60 z-[2] text-white">
+        <p className="text-xl"><b>Legend.video</b> is your <a className="underline" href="https://github.com/gaborcselle/legend.video">open source</a> AI director.</p>
+        <p className="text-xl">Describe your concept, it will make a video with Gen AI.</p>
         <p>Sign in with your GitHub or Google account to get started.</p>
         <OAuthWithGithub />
         <OAuthWithGoogle />
