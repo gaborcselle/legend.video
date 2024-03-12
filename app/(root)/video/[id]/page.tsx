@@ -19,8 +19,11 @@ export default function VideoPage({ params }: { params: { id: string } }) {
     // initializing that we're not generating project
     setIsGeneratingProject(false)
 
+    // TODO: (Gabor) This is kinda like a hack for not refreshing the scenes after navigation
+    const currentRoute = window.location.pathname
+
     // fetch the project data
-    const getProject = async () => {
+    async function getProject () {
       try {
         const project = await supabase.from('projects').select('*').eq('id', params.id)
         if (project.error) {
@@ -57,7 +60,10 @@ export default function VideoPage({ params }: { params: { id: string } }) {
             throw new Error('Failed to generate scenes');
           }
           const data = await res.json()
-          setScenes(data.scenes)
+          console.log(currentRoute, '😬😬😬')
+          if(currentRoute === window.location.pathname) {
+            setScenes(data.scenes)
+          }
         }
       } catch (error) {
         setError('Failed to fetch project: ' + error)
@@ -66,6 +72,10 @@ export default function VideoPage({ params }: { params: { id: string } }) {
       setIsLoading(false)
     }
     getProject()
+
+    return () => {
+
+    }
   }, [])
 
   if (isLoading) {
