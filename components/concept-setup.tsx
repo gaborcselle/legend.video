@@ -16,15 +16,15 @@ import { useExecTimeCounter } from '@/lib/hooks/use-exec-time-counter'
 const exampleConcepts = [
   {
     heading: 'San Francisco AI startup success',
-    concept: `A brilliant but reclusive AI developer stumbles upon a groundbreaking algorithm that could redefine human-computer interaction. Set against the backdrop of San Francisco's iconic landmarks and bustling startup culture, the story unfolds as the developer's creation leads to a tech revolution.`
+    concept: "Brilliant AI developer stumbles upon a groundbreaking algorithm. Set in San Francisco."
   },
   {
-    heading: 'App Street Artist',
-    concept: `App Artist: Focusing on a street artist whose work is only visible through a special app, the film explores themes of digital versus physical reality, the nature of art, and anonymity. As the artist's fame grows in the digital world, their desire for real-world recognition and the implications of their anonymity create a compelling internal and external conflict.`
+    heading: 'Abandoned mansion whodunnit',
+    concept: "Historical drama set in an old, seemingly abandoned mansion. Young historian comes to visit, experience flashbacks of the mansion's past inhabitants."
   },
   {
-    heading: 'Abandoned Mansion Whodunnit',
-    concept: "Echoes of the Past: A historical drama set in an old, seemingly abandoned mansion that a young historian has come to document. As the night progresses, the historian starts experiencing vivid, ghostly flashbacks of the mansion's past inhabitants, uncovering a century-old mystery that directly connects to their own lineage."
+    heading: 'Action movie sequel',
+    concept: "Sequel to a popular action movie in the style of James Bond or Mission: Impossible."
   },
 ]
 
@@ -116,10 +116,7 @@ export default function ConceptSetup() {
   return (
     <Card>
       <CardHeader className="p-4">
-        <CardTitle>Concept</CardTitle>
-        <CardDescription>
-          Describe the concept of your video, then click &quot;Generate Storyboard&quot; to have GPT-4 generate the storyboard.
-        </CardDescription>
+        <CardTitle>Project Concept</CardTitle>
       </CardHeader>
       <CardContent>
         <Textarea
