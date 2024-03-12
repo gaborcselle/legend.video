@@ -27,7 +27,7 @@ export default async function SignInPage() {
         className="w-screen h-screen absolute top-0 left-0 object-cover"
       />
       <div className="flex h-[calc(100vh-theme(spacing.16))] items-center justify-center py-10 flex-col gap-4 bg-slate-950 bg-opacity-30 z-[2] text-white">
-        <p><b>Legend.video</b> lets you build your movie trailer from a prompt.</p>
+        <p><b>Legend.video</b> is your <a className="underline" href="https://github.com/gaborcselle/legend.video">open source</a> AI director. Describe a story, it will make a video with Gen AI.</p>
         <p>Sign in with your GitHub or Google account to get started.</p>
         <OAuthWithGithub />
         <OAuthWithGoogle />
