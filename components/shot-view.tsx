@@ -623,7 +623,7 @@ export default function ShotView(props: IShotProps) {
             <>
               {stills && stills[currentStillIndex] ? (
                 <>
-                  {isEditable ? (
+                  {isEditable && !stillPending ? (
                     <Button
                       className="min-w-24"
                       onClick={() => generateStill()}
