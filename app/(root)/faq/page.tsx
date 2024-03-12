@@ -85,6 +85,16 @@ export default function FAQ() {
             run your own instance of the software.
         </p>
       </FaqItem>
+
+      <FaqItem title="7. How can I contact you?">
+        <p>
+          If you're having issues with legend.video, please email us at support (at) the domain name of this website.
+        </p>
+        <p>
+          If you found a problem in our source code, please open an issue on our <a className="underline"
+            href="https://github.com/gaborcselle/legend.video">Github issues page</a>.
+        </p>
+      </FaqItem>
     </div>
   )
 }
