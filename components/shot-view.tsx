@@ -644,6 +644,14 @@ export default function ShotView(props: IShotProps) {
                           ? 'Loading...'
                           : 'Generate Still'}
                     </Button>
+                  ) : stillPending &&
+                    currentStillIndex + 1 === stills?.length ? (
+                    <img
+                      className="cursor-pointer"
+                      src={stills[currentStillIndex].still_url ?? ''}
+                      alt="Still"
+                      onClick={() => setExpand(currentStillIndex)}
+                    />
                   ) : (
                     <ExpandableMedia
                       expand={expand === currentStillIndex}
