@@ -25,15 +25,12 @@ async function UserOrLogin() {
       {user ? (
         <>
           <SidebarToggle />
+          <IconSeparator className="size-6 text-muted-foreground/50" />
         </>
       ) : (
-        <Link href="/" target="_blank" rel="nofollow">
-          <IconLegendVideo className="size-6 mr-2 dark:hidden" inverted />
-          <IconLegendVideo className="hidden size-6 mr-2 dark:block" />
-        </Link>
+        <></>
       )}
-      <div className="flex items-center">
-        <IconSeparator className="size-6 text-muted-foreground/50" />
+      <div className="flex items-center">        
         <Logo className="w-6 h-6 mr-1" />
         Legend.video
         <IconSeparator className="size-6 text-muted-foreground/50" />
