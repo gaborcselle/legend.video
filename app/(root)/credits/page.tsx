@@ -5,6 +5,7 @@ import CreditOption from '@/components/credit-option'
 import { useProjects } from '@/lib/hooks/use-projects'
 import { createClient } from '@/utils/supabase/client'
 import { Button } from '@/components/ui/button'
+import { IconCoin } from '@/components/ui/icons'
 
 export default function Credits() {
   const supabase = createClient()
@@ -57,25 +58,34 @@ export default function Credits() {
 
   return (
     <div className="flex flex-col items-center p-10 gap-10">
-      <h1 className="text-2xl font-bold text-center">Add Credits</h1>
+      <h1 className="text-2xl font-bold">Purchase Credits</h1>
+      <div className="items-left">
+        <p>Thank you for helping us pay our AI bills!</p>
+          <ul className="list-disc pl-5">
+            <li>We initially give each new user <IconCoin className="inline" width={16} /> 500 credits.</li>
+            <li>Each storyboard and video generation costs us about USD $0.12. We charge <IconCoin className="inline" width={16} /> 20 for each.</li>
+            <li>After your initial <IconCoin className="inline" width={16} /> 500 credits are used up, we ask you to purchase more below.</li>
+            <li>Your payment will be processed by Stripe.</li>
+          </ul>
+      </div>
       <div className="flex flex-col lg:flex-row gap-10">
         <CreditOption
-          className={amount === 100 ? 'border border-primary' : ''}
-          amount={100}
+          className={amount === 500 ? 'border-4 border-double bg-green-400 dark:bg-green-800' : ''}
+          amount={500}
           setAmount={setAmount}
           price="USD $5"
         />
         <CreditOption
-          className={amount === 1000 ? 'border border-primary' : ''}
+          className={amount === 1000 ? 'border-4 border-double bg-green-400 dark:bg-green-800' : ''}
           amount={1000}
           setAmount={setAmount}
-          price="USD $30"
+          price="USD $8"
         />
         <CreditOption
-          className={amount === 10000 ? 'border border-primary' : ''}
+          className={amount === 10000 ? 'border-4 border-double bg-green-400 dark:bg-green-800' : ''}
           amount={10000}
           setAmount={setAmount}
-          price="USD $50"
+          price="USD $20"
         />
       </div>
       <Button onClick={addCredits} disabled={isLoading || !amount}>

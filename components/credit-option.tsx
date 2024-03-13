@@ -13,7 +13,7 @@ export default function CreditOption({amount, price, setAmount, className}: ICre
   return (
     <Card
       onClick={() => setAmount(amount)}
-      className={cn("min-w-56 flex flex-col items-center cursor-pointer", className)}
+      className={cn("min-w-56 flex flex-col items-center cursor-pointer pb-5", className)}
     >
       <CardHeader className="font-bold items-center flex-row">
         <IconCoin />

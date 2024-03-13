@@ -4,9 +4,9 @@ import { Stripe } from 'stripe'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 const options = {
-  100: 5,
-  1000: 30,
-  10000: 50
+  500: 5,
+  1000: 8,
+  10000: 20
 }
 
 export async function POST(request: NextRequest) {
