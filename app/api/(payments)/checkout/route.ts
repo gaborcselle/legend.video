@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const session = await stripe.checkout.sessions.create({
-      success_url: `${process.env.BASE_URL || process.env.VERCEL_URL || 'http://localhost:3000'}/thank-you`,
+      success_url: `${process.env.BASE_URL || 'http://localhost:3000'}/thank-you`,
       line_items: [
         {
           price_data: {
