@@ -59,6 +59,7 @@
     "remark-math": "^5.1.1",
     "replicate": "^0.27.1",
     "sharp": "0.32.6",
+    "stripe": "^14.20.0",
     "use-debounce": "^10.0.0",
     "vercel": "^33.5.1"
   },
