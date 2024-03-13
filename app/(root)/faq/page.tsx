@@ -73,9 +73,9 @@ export default function FAQ() {
 
       <FaqItem title="6. Do I have to buy a subscription?">
         <p>
-          No. We have a credits system to make sure users don't utilize all our
-          resources. You get 200 free credits when you sign up. You can then buy
-          more credits: 200 credits for $5, 1000 credits for $30, or 5000 credits for $50.
+          No, but we have a pay-as-you-go credits system to make sure users don't utilize all our
+          resources. You receive 500 free credits when you sign up. You can then buy
+          more credits: 500 credits for $5, 1000 credits for $8, or 10000 credits for $20.
           We have calculated these prices so that we can cover our AI provider bills.
         </p>
         <p>
