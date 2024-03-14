@@ -49,7 +49,7 @@ export default async function SignInPage() {
       <div className="flex flex-col lg:flex-row items-start lg:space-y-2">
 
         {/* Left side - Login section */}
-        <div className="hidden lg:flex z-10 flex-1 items-center justify-center px-4 flex-col gap-4 text-white pt-16">
+        <div className="hidden lg:flex z-10 flex-1 items-center justify-center px-4 flex-col gap-4 text-white pt-20">
           <p className="text-xl"><b>Legend.video</b> is your <a className="underline" href="https://github.com/gaborcselle/legend.video">open source</a> AI director.</p>
           <p className="text-xl">Describe your concept, it will make a video with Gen AI.</p>
           <p className="text-xl">Sign in with your GitHub or Google account to get started.</p>
