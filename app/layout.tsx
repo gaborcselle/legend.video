@@ -22,7 +22,7 @@ export const metadata = {
     default: 'Legend.video',
     template: `%s - Legend.video`
   },
-  description: 'Make your stories come alive in video, with Legend.video.',
+  description: 'Legend.video is your open source Gen AI movie director.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
