@@ -80,3 +80,7 @@
 .dark .faq-item a {
   color: white;
 }
+
+.min-h-screen-4rem {
+  min-height: calc(100vh - 4rem);
+}

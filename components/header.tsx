@@ -38,7 +38,7 @@ async function UserOrLogin() {
           <UserMenu user={user} />
         ) : (
           <Button variant="link" asChild className="-ml-2">
-            <Link href="/sign-in?callbackUrl=/">Login</Link>
+            <Link href="/faq">About</Link>
           </Button>
         )}
       </div>
