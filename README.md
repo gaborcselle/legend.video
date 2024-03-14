@@ -1,8 +1,10 @@
 Legend.video lets you build generative AI video with a simple workflow. You can try it at [Legend.video](https://legend.video).
 
-# Screenshot
+# Screenshots
 
-![Legend.video Screenshot](docs/legend_video_screenshot.jpg)
+![Legend.video Screenshot - Homepage](docs/screenshot_homepage.jpg)
+
+![Legend.video Screenshot - Workflow](docs/screenshot_workflow.jpg)
 
 # Features
 

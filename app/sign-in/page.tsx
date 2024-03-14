@@ -55,11 +55,6 @@ export default async function SignInPage() {
           <p className="text-xl">Sign in with your GitHub or Google account to get started.</p>
           <OAuthWithGithub />
           <OAuthWithGoogle />
-          <Link href="/faq">
-            <Button variant="secondary">
-              FAQ
-            </Button>
-          </Link>
         </div>
 
         {/* Right side - Video section for desktop */}
