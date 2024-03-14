@@ -1,8 +1,10 @@
-Legend.video lets you build generative AI video with a simple workflow. You can try it at [Legend.video](https://legend.video).
+Legend.video is your open source AI director. Describe your concept, it will make a video with Gen AI. You can try it at [Legend.video](https://legend.video).
 
 # Screenshots
 
 ![Legend.video Screenshot - Homepage](docs/screenshot_homepage.jpg)
+
+___
 
 ![Legend.video Screenshot - Workflow](docs/screenshot_workflow.jpg)
 
@@ -44,7 +46,7 @@ $ pnpm run dev
 
 You should now be able to see the app running at [localhost:3000](http://localhost:3000).
 
-# Where YOU can help
+# Where you can help
 
 If you'd like help with any of the following, get in touch:
 
