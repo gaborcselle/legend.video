@@ -18,7 +18,7 @@ Current video models generate 2-4 second clips which fail to tell a story. Legen
 
 * Next.js App Router, Tailwind CSS, shadcn/ui
 * Supabase for OAuth (via Github and Google) and Postgres DB
-* gpt-4-turbo-preview for generating storyboards (but this can be replaced with gpt-3.5-turbo and any model that supports function calling)
+* gpt-4o for generating storyboards (but this can be replaced with gpt-3.5-turbo and any model that supports function calling)
 * text-to-image and image-to-video models on Replicate for generating still images and videos
 * We're hosting https://legend.video/ on Vercel, but you could easily run it elsewhere too.
 * We're using Stripe to charge users for additional generation credits after the initial 200 free credits every user receives.

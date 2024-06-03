@@ -2,7 +2,7 @@
 import { OpenAI } from 'openai';
 
 // GPT model to use for chat completions
-const GPT_MODEL = "gpt-4-turbo-preview";
+const GPT_MODEL = "gpt-4o";
 
 export async function chatCompletionRequest(openai : OpenAI, messages: any[], tools: any[] = [], model: string = GPT_MODEL) {
     try {
