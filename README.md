@@ -65,4 +65,8 @@ Please report issues at the [Github Issues page](https://github.com/gaborcselle/
 
 If you'd like to contribute bugfixes or new features, please fork the repo, make your changes in a branch, and then submit a pull request. We'll review it as soon as possible and merge it in if it's good.
 
+## Star History
 
+Thanks for starring this repo!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=gaborcselle/legend.video&type=Date)](https://star-history.com/#gaborcselle/legend.video&Date)
